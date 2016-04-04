@@ -1,0 +1,27 @@
+label,
+textarea {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.modal-body__room-id {
+  font-weight: bold;
+  font-size: 21px;
+}
+
+.key-text-area {
+  margin: 25px 0;
+}
+
+.generate-key {
+  text-transform: uppercase;
+  color: #337ab7;
+  text-decoration: underline;
+
+  cursor: pointer;
+}
+
+.connection-id {
+  margin-top: 20px;
+  margin-right: 25px;
+}
