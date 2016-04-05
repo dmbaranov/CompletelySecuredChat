@@ -1,31 +1,51 @@
 (function () {
   var Chat = function () {
+    this.peer = {};
+    this.connection = {};
+    this.connectedPeers = {};
     this.pass = '';
     this.userPrivateRSAKey = ''
     this.userPublicRSAKey = '';
     this.companionPublicRSAKey = '';
-    this.connectionID = '';
+    this.requestedPeer = '';
 
     this.init();
-  }
+  };
 
   Chat.prototype.init = function () {
+    var __self = this;
+
+    this.peer = new Peer({
+      key: 'x7fwx2kavpy6tj4i',
+      debug: 3,
+      logFunction: function() {
+        var copy = Array.prototype.slice.call(arguments).join(' ');
+        console.log(copy);
+      }
+    });
+
+    this.peer.on('connection', this.connect.bind(this));
+    this.peer.on('error', function (err) {
+      console.log('Error: ' + err);
+    });
 
     $('#startingWindow').modal('show');
     $('.generate-key').click(this.generateRSAKeys.bind(this));
+    $('#connect').click(this.onConnectClick.bind(this));
+    $('#sendMessageButton').click(this.sendMessage.bind(this));
     $('#companionPublicKey').keydown(this.setCompanionRSAKey.bind(this));
-    $('#startingContinue').click(function () {
-      $('#startingContinue').modal('hide');
+    $('#startingWindowContinueButton').click(function () {
+      $('#startingWindow').modal('hide');
       $('#makeConnectionWindow').modal('show');
+      $('#pid').html(__self.peer.id);
     });
-    $('#connectionID').keydown(this.renderConnectionWindow);
+    $('#requestedPeer').keydown(this.renderConnectionWindow);
     $('#connect').click((function () {
       $('#makeConnectionWindow').modal('hide');
       $('#awaitingWindow').modal('show');
-      this.connectionID = $('#connectionID').val();
-      this.connect();
+      this.requestedPeer = $('#connectionID').val()
     }).bind(this));
-  }
+  };
 
   Chat.prototype.generatePassword = function () {
     var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
@@ -35,60 +55,86 @@
     }
 
     return result;
-  }
+  };
 
   Chat.prototype.generateRSAKeys = function () {
     this.pass = this.generatePassword();
     this.userPrivateRSAKey = cryptico.generateRSAKey(this.pass, 512);
     this.userPublicRSAKey = cryptico.publicKeyString(this.userPrivateRSAKey);
     this.renderStartingWindow();
-  }
+  };
 
   Chat.prototype.setCompanionRSAKey = function () {
     this.companionPublicRSAKey = $('#companionPublicKey').val();
     this.renderStartingWindow();
-  }
+  };
 
-  Chat.prototype.connect = function () {
-    var requestedPeer = this.connectionID;
-    if (!connectedPeers[requestedPeer]) {
-      // Create 2 connections, one labelled chat and another labelled file.
-      var c = peer.connect(requestedPeer, {
+  Chat.prototype.connect = function (c) {
+    var __self = this;
+    if(c.label == 'chat') {
+      c.on('data', function (data) {
+        console.log('Received: ' + data);
+      });
+      c.on('close', function () {
+        console.log('Someone has left');
+        delete __self.connectedPeers[c.peer];
+      });
+    }
+    this.connectedPeers[c.peer] = 1;
+    this.connection = c;
+    $('#awaitingWindow').modal('hide');
+    $('#makeConnectionWindow').modal('hide');
+  };
+
+  Chat.prototype.onConnectClick = function () {
+    var __self = this;
+    var tempRequestedPeer = $('#connectionID').val()
+    if(!this.connectedPeers[tempRequestedPeer]) {
+      var c = this.peer.connect(tempRequestedPeer, {
         label: 'chat',
         serialization: 'none',
         metadata: {message: 'hi i want to chat with you!'}
       });
-      c.on('open', function() {
-        connect(c);
+
+      c.on('open', function () {
+        __self.connect(c);
       });
-      c.on('error', function(err) { alert(err); });
-      var f = peer.connect(requestedPeer, { label: 'file', reliable: true });
-      f.on('open', function() {
-        connect(f);
+      c.on('error', function (err) {
+        console.log(err);
       });
-      f.on('error', function(err) { alert(err); });
     }
-    connectedPeers[requestedPeer] = 1;
+    this.connectedPeers[tempRequestedPeer] = 1;
+  };
+
+  Chat.prototype.sendMessage = function (e) {
+    e.preventDefault();
+
+    var msg = $('#messageText').val();
+    this.connection.send(msg);
+  }
+
+  Chat.prototype.eachActiveConnection = function (fn) {
+
   }
 
   Chat.prototype.renderStartingWindow = function () {
-    $('#creatorPublicKey').html(this.userPublicRSAKey);
+    /*$('#creatorPublicKey').html(this.userPublicRSAKey);
     if($('#companionPublicKey').val().length > 1 && this.userPublicRSAKey.length > 1) {
-      $('#startingContinue').prop('disabled', false);
+      $('#startingWindowContinueButton').prop('disabled', false);
     }
     else {
-      $('#startingContinue').prop('disabled', true);
-    }
-  }
+    $('#startingWindowContinueButton').prop('disabled', true);
+    }*/
+  };
 
   Chat.prototype.renderConnectionWindow = function () {
-    if($('#connectionID').val().length > 1) {
+    /*if($('#connectionID').val().length > 1) {
       $('#connect').prop('disabled', false);
     }
     else {
       $('#connect').prop('disabled', true);
-    }
-  }
+    }*/
+  };
 
   window.peerjschat = new Chat();
 

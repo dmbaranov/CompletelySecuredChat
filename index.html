@@ -74,7 +74,7 @@
           <textarea name="companionKey" id="companionPublicKey" class="key-text-area input-large" cols="90" rows="5"></textarea>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-primary" id="startingContinue" data-dismiss="modal" aria-hidden="true" disabled>Продолжить</button>
+          <button class="btn btn-primary" id="startingWindowContinueButton" data-dismiss="modal" aria-hidden="true">Продолжить</button> <!-- Set this button disabled -->
         </div>
       </div>
     </div>
@@ -92,7 +92,7 @@
           Дождитесь, пока кто нибудь к вам присоединится, либо введите ID собеседника и нажмите кнопку Подключение
           <br>
           <input type="text" class="connection-id" id="connectionID" placeholder="ID собеседника">
-          <button class="btn btn-primary" id="connect" aria-hidden="true" disabled>Подключение</button>
+          <button class="btn btn-primary" id="connect" aria-hidden="true">Подключение</button> <!-- Set this button disabled -->
         </div>
       </div>
     </div>
@@ -112,8 +112,8 @@
   </div>
 
   <form id="send">
-    <input type="text" id="text" placeholder="Enter message">
-    <input type="submit" value="Send">
+    <input type="text" id="messageText" placeholder="Enter message">
+    <input type="submit" id="sendMessageButton" value="Send">
   </form>
   <button id="close">Close connection</button>
   <div id="connections">
@@ -121,7 +121,7 @@
   </div>
   <div class="box"></div>
 
-  <script src="js/peerSettings.js"></script>
+  <!--<script src="js/peerSettings.js"></script>-->
   <script src="js/jsbn.js"></script>
   <script src="js/cryptico.js"></script>
   <script src="js/random.js"></script>
