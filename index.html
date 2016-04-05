@@ -1,127 +1,97 @@
-<!--<!doctype html>
-<html>
+<!doctype html>
+<html lang="ru">
   <head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-    <script src="http://cdn.peerjs.com/0.3/peer.min.js"></script>
-  </head>
-  <body>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <title>Completely Secured Chat</title>
 
-  <form name="makeConnection" action="">
-    <input type="text" id="peerID">
-    <input type="button" id="makeConnection" value="connect">
-  </form>
-
-  <form name="sendMessage" action="">
-    <input type="text" id="messageField">
-    <input type="button" id="sendMessage" value="connect">
-  </form>
-
-  </body>
-</html>-->
-
-<!DOCTYPE HTML>
-<html lang="en">
-  <head>
-    <title>PeerJS chat demo</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta http-equiv="Content-Language" content="en-us">
-
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/paper/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <script src="http://cdn.peerjs.com/0.3/peer.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
   </head>
   <body>
-  <!--<div id="actions">
-    Your PeerJS ID is <span id="pid"></span><br>
-    Connect to a peer: <input type="text" id="rid" placeholder="Someone else's id"><input class="button" type="button" value="Connect" id="connect"><br><br>
-
-    <form id="send">
-      <input type="text" id="text" placeholder="Enter message"><input class="button" type="submit" value="Send to selected peers">
-    </form>
-    <button id="close">Close selected connections</button>
-  </div>
-  <div id="wrap"><div id="connections"><span class="filler">You have not yet
-          made any connections.</span>
-  </div>
-  <div id="box" style="background: #fff; font-size: 18px;padding:40px 30px; text-align: center;">
-    Drag file here to send to active connections.
-  </div>
-  <div class="warning browser">
-    <div class="important">Your browser version: <span id="browsers"></span><br>
-      Currently <strong>Firefox 22+ and Google Chrome 26.0.1403.0 or above</strong> is required.</strong></div>For more up to date compatibility
-    information see <a href="http://peerjs.com/status">PeerJS WebRTC
-    Status</a><br>Note that this demo may also fail if you are behind
-    stringent firewalls or both you and the remote peer and behind symmetric
-    NATs.
-    <div class="log" style="color:#FF7500;text-shadow:none;padding:15px;background:#eee"><strong>Connection status</strong>:<br></div>
-  </div>-->
-
-
-  <div class="modal fade" id="startingWindow" role="dialog" data-backdrop="static" data-keyboard="false" hidden>
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 id="myModalLabel">Приветствуем... Для начала необходимо обменяться ключами шифрования</h3>
+  <div class="container-fluid">
+    <div class="modal fade" id="startingWindow" role="dialog" data-backdrop="static" data-keyboard="false" hidden>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 id="myModalLabel">Приветствуем... Для начала необходимо представиться и обменяться ключами шифрования</h3>
+          </div>
+          <div class="modal-body">
+            Ваше имя:
+            <input type="text" id="userName" class="user-name-field" placeholder="Введите ваше имя">
+            <br>
+            Ваш ключ шифрования (<span id="generateKey" class="generateKey">Сгенерировать</span>. Генерация ключа может происходить до нескольких секунд. Не забудьте отправить его собеседнику):
+            <textarea name="creatorKey" id="creatorPublicKey" class="key-text-area input-large" rows="5" readonly></textarea>
+            Вставьте сюда ключ шифрования собеседника:
+            <textarea name="companionKey" id="companionPublicKey" class="key-text-area input-large" rows="5"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" id="startingWindowContinueButton" data-dismiss="modal" aria-hidden="true" disabled>Продолжить</button>
+          </div>
         </div>
-        <div class="modal-body">
-          Ваш ключ шифрования (<span class="generate-key">Сгенерировать</span>. Генерация ключа может происходить до нескольких секунд. Не забудьте отправить его собеседнику):
-          <textarea name="creatorKey" id="creatorPublicKey" class="key-text-area input-large" cols="90" rows="5" readonly></textarea>
-          Вставьте сюда ключ шифрования собеседника:
-          <textarea name="companionKey" id="companionPublicKey" class="key-text-area input-large" cols="90" rows="5"></textarea>
+      </div>
+    </div>
+
+    <div class="modal fade" id="makeConnectionWindow" role="dialog" data-backdrop="static" data-keyboard="false" hidden>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 id="myModalLabel">Комната</h3>
+          </div>
+          <div class="modal-body">
+            Ваш ID: <span class="modal-body__room-id" id="pid"></span>
+            <br>
+            Дождитесь, пока кто нибудь к вам присоединится, либо введите ID собеседника и нажмите кнопку Подключение
+            <br>
+            <input type="text" class="connection-id" id="connectionID" placeholder="ID собеседника">
+            <button class="btn btn-primary" id="connect" aria-hidden="true" disabled>Подключение</button>
+          </div>
         </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary" id="startingWindowContinueButton" data-dismiss="modal" aria-hidden="true">Продолжить</button> <!-- Set this button disabled -->
+      </div>
+    </div>
+
+    <div class="modal fade" id="awaitingWindow" role="dialog" data-backdrop="static" data-keyboard="false" hidden>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 id="myModalLabel">Ожидайте</h3>
+          </div>
+          <div class="modal-body">
+            Это окно будет автоматически закрыто, когда соединение будет установлено
+          </div>
         </div>
+      </div>
+    </div>
+
+    <div class="chat-box">
+      <div class="chat-box__header">История сообщений</div>
+      <div class="chat-box__messages">
+        <div class="chat-box__message guest-message">Oh fine, thanks!!!! And here i gonna write very long message just to test how it will be rendered :D</div>
+        <div class="chat-box__message my-message">How it's going bro?!</div>
+        <div class="chat-box__message guest-message">Hey there!</div>
+        <div class="chat-box__message my-message">Hello, world!</div>
+      </div>
+      <div class="chat-box__footer">
+        <form id="send">
+          <input type="text" id="messageText" class="chat-box__message-text" placeholder="Enter message">
+          <button class="btn btn-primary chat-box__button-send" id="sendMessageButton" aria-hidden="true">Отправить</button>
+        </form>
+        <!--<button id="close">Close connection</button>-->
+        <div class="box"></div>
       </div>
     </div>
   </div>
 
-  <div class="modal fade" id="makeConnectionWindow" role="dialog" data-backdrop="static" data-keyboard="false" hidden>
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 id="myModalLabel">Комната</h3>
-        </div>
-        <div class="modal-body">
-          Ваш ID: <span class="modal-body__room-id" id="pid"></span>
-          <br>
-          Дождитесь, пока кто нибудь к вам присоединится, либо введите ID собеседника и нажмите кнопку Подключение
-          <br>
-          <input type="text" class="connection-id" id="connectionID" placeholder="ID собеседника">
-          <button class="btn btn-primary" id="connect" aria-hidden="true">Подключение</button> <!-- Set this button disabled -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="awaitingWindow" role="dialog" data-backdrop="static" data-keyboard="false" hidden>
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 id="myModalLabel">Ожидайте</h3>
-        </div>
-        <div class="modal-body">
-          Это окно автоматически будет закрыто, когда соединение будет установлено
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <form id="send">
-    <input type="text" id="messageText" placeholder="Enter message">
-    <input type="submit" id="sendMessageButton" value="Send">
-  </form>
-  <button id="close">Close connection</button>
-  <div id="connections">
-    <span class="filler">You haven't yet made any connections.</span>
-  </div>
-  <div class="box"></div>
-
-  <!--<script src="js/peerSettings.js"></script>-->
   <script src="js/jsbn.js"></script>
   <script src="js/cryptico.js"></script>
   <script src="js/random.js"></script>

@@ -4,6 +4,7 @@
     this.connection = {};
     this.connectedPeers = {};
     this.pass = '';
+    this.userName = '';
     this.userPrivateRSAKey = ''
     this.userPublicRSAKey = '';
     this.companionPublicRSAKey = '';
@@ -30,27 +31,33 @@
     });
 
     $('#startingWindow').modal('show');
-    $('.generate-key').click(this.generateRSAKeys.bind(this));
+    $('#generateKey').click(this.generateRSAKeys.bind(this));
     $('#connect').click(this.onConnectClick.bind(this));
     $('#sendMessageButton').click(this.sendMessage.bind(this));
-    $('#companionPublicKey').keydown(this.setCompanionRSAKey.bind(this));
     $('#startingWindowContinueButton').click(function () {
       $('#startingWindow').modal('hide');
       $('#makeConnectionWindow').modal('show');
       $('#pid').html(__self.peer.id);
+      __self.userName = $('#userName').val();
     });
-    $('#requestedPeer').keydown(this.renderConnectionWindow);
     $('#connect').click((function () {
       $('#makeConnectionWindow').modal('hide');
       $('#awaitingWindow').modal('show');
       this.requestedPeer = $('#connectionID').val()
     }).bind(this));
+
+    $('#companionPublicKey').on('input', this.setCompanionRSAKey.bind(this));
+    $('#userName').on('input', this.renderStartingWindow.bind(this));
+    $('#connectionID').on('input', this.renderConnectionWindow);
+
+    $('#startingWindow').modal('hide');
+    $('#makeConnectionWindow').modal('hide');
   };
 
   Chat.prototype.generatePassword = function () {
-    var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+    var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*();.",
         result = '';
-    for(var i = 0; i < 24; i++) {
+    for(var i = 0; i < 64; i++) {
       result += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
     }
 
@@ -109,7 +116,11 @@
   Chat.prototype.sendMessage = function (e) {
     e.preventDefault();
 
-    var msg = $('#messageText').val();
+    var time = new Date(),
+        hours = time.getHours() < 10 ? ('0' + time.getHours()) : time.getHours(),
+        minutes = time.getMinutes() < 10 ? ('0' + time.getMinutes()) : time.getMinutes()
+        seconds = time.getSeconds() < 10 ? ('0' + time.getSeconds()) : time.getSeconds()
+    var msg = '[' + hours + ':' + minutes + ':' + seconds +'] ' + this.userName + ': ' + $('#messageText').val();
     this.connection.send(msg);
   }
 
@@ -118,22 +129,23 @@
   }
 
   Chat.prototype.renderStartingWindow = function () {
-    /*$('#creatorPublicKey').html(this.userPublicRSAKey);
-    if($('#companionPublicKey').val().length > 1 && this.userPublicRSAKey.length > 1) {
+    $('#creatorPublicKey').html(this.userPublicRSAKey);
+
+    if($('#companionPublicKey').val().length > 0 && this.userPublicRSAKey.length > 0 && $('#userName').val().length > 0) {
       $('#startingWindowContinueButton').prop('disabled', false);
     }
     else {
     $('#startingWindowContinueButton').prop('disabled', true);
-    }*/
+    }
   };
 
   Chat.prototype.renderConnectionWindow = function () {
-    /*if($('#connectionID').val().length > 1) {
+    if($('#connectionID').val().length > 0) {
       $('#connect').prop('disabled', false);
     }
     else {
       $('#connect').prop('disabled', true);
-    }*/
+    }
   };
 
   window.peerjschat = new Chat();
