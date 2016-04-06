@@ -14,8 +14,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/paper/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-    <script src="http://cdn.peerjs.com/0.3/peer.min.js"></script>
+    <script src="js/jquery-2.2.3.min.js"></script>
+    <script src="js/peer.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
   </head>
   <body>
@@ -75,11 +75,7 @@
 
     <div class="chat-box">
       <div class="chat-box__header">История сообщений</div>
-      <div class="chat-box__messages">
-        <div class="chat-box__message guest-message">Oh fine, thanks!!!! And here i gonna write very long message just to test how it will be rendered :D</div>
-        <div class="chat-box__message my-message">How it's going bro?!</div>
-        <div class="chat-box__message guest-message">Hey there!</div>
-        <div class="chat-box__message my-message">Hello, world!</div>
+      <div id="messagesBox" class="chat-box__messages">
       </div>
       <div class="chat-box__footer">
         <form id="send">

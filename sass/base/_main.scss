@@ -1,3 +1,19 @@
 body {
   background: $light-grey;
+
+  @include mq-xs {
+    background: red;
+  }
+
+  @include mq-sm {
+    background: green;
+  }
+
+  @include mq-md {
+    background: blue;
+  }
+
+  @include mq-lg {
+    background: black;
+  }
 }
