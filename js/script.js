@@ -51,8 +51,8 @@
     $('#userName').on('input', this.renderStartingWindow.bind(this));
     $('#connectionID').on('input', this.renderConnectionWindow);
 
-    /*$('#startingWindow').modal('hide');
-    $('#makeConnectionWindow').modal('hide');*/
+    $('#startingWindow').modal('hide');
+    $('#makeConnectionWindow').modal('hide');
   };
 
   Chat.prototype.generatePassword = function () {
@@ -89,12 +89,6 @@
         msg.innerHTML = cryptico.decrypt(tData.cipher, __self.userPrivateRSAKey).plaintext;
         __self.messagesBox.prepend(msg);
         console.log('Received: ' + data);
-        /*var parsedData = JSON.parse(data),
-            cryptedMessage = parsedData.cipher;
-
-        console.log('Data: ' + data);
-        console.log(parsedData);
-        console.log('Cipher: ' + cryptedMessage);*/
       });
       c.on('close', function () {
         console.log('Someone has left');

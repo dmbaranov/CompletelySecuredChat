@@ -1,32 +1,43 @@
 .chat-box {
+  position: relative;
+
   display: flex;
   flex-direction: column;
   height: 100vh;
 
   background: $lighter-grey;
 
-  @include col-xs-12;
-  @include col-xs-offset-2;
+  box-sizing: border-box;
 }
 
 .chat-box__header {
+  margin-bottom: 30px;
+
   padding: 25px;
 
   color: white;
   font-size: $font-lg-medium;
 
   background: $indigo;
+
+  @include mq-xs {
+    padding: 35px;
+  }
 }
 
 .chat-box__messages {
   display: flex;
   flex-direction: column-reverse;
   flex-grow: 1;
+
+  overflow-y: scroll;
 }
 
 .chat-box__message {
-  max-width: 350px;
+  margin: 15px 0;
+
   padding: 0 15px;
+  max-width: 250px;
 
   font-size: $font-lg-big;
 }
@@ -34,7 +45,7 @@
 .my-message {
   background: #E0E0E0;
 
-  @include col-xs-offset-14;
+  @include col-xs-offset-5;
 }
 
 .guest-message {
@@ -49,15 +60,22 @@
   margin: 15px 0;
 
   height: 50px;
+
+  @include col-xs-4;
 }
 
 .chat-box__message-text {
-  width: 70.833333%;
+  display: inline-block;
+  max-width: 70.833333%;
   height: 50px;
 
   text-indent: 25px;
 
   @include col-xs-offset-1;
+
+  @include mq-xs {
+    max-width: 58.33333333%;
+  }
 }
 
 .chat-box__button-send {

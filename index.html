@@ -20,70 +20,79 @@
   </head>
   <body>
   <div class="container-fluid">
-    <div class="modal fade" id="startingWindow" role="dialog" data-backdrop="static" data-keyboard="false" hidden>
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 id="myModalLabel">Приветствуем... Для начала необходимо представиться и обменяться ключами шифрования</h3>
-          </div>
-          <div class="modal-body">
-            Ваше имя:
-            <input type="text" id="userName" class="user-name-field" placeholder="Введите ваше имя">
-            <br>
-            Ваш ключ шифрования (<span id="generateKey" class="generateKey">Сгенерировать</span>. Генерация ключа может происходить до нескольких секунд. Не забудьте отправить его собеседнику):
-            <textarea name="creatorKey" id="creatorPublicKey" class="key-text-area input-large" rows="5" readonly></textarea>
-            Вставьте сюда ключ шифрования собеседника:
-            <textarea name="companionKey" id="companionPublicKey" class="key-text-area input-large" rows="5"></textarea>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-primary" id="startingWindowContinueButton" data-dismiss="modal" aria-hidden="true" disabled>Продолжить</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal fade" id="makeConnectionWindow" role="dialog" data-backdrop="static" data-keyboard="false" hidden>
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 id="myModalLabel">Комната</h3>
-          </div>
-          <div class="modal-body">
-            Ваш ID: <span class="modal-body__room-id" id="pid"></span>
-            <br>
-            Дождитесь, пока кто нибудь к вам присоединится, либо введите ID собеседника и нажмите кнопку Подключение
-            <br>
-            <input type="text" class="connection-id" id="connectionID" placeholder="ID собеседника">
-            <button class="btn btn-primary" id="connect" aria-hidden="true" disabled>Подключение</button>
+    <div class="container">
+      <div class="modal fade" id="startingWindow" role="dialog" data-backdrop="static" data-keyboard="false" hidden>
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 id="myModalLabel">Приветствуем... Для начала необходимо представиться и обменяться ключами шифрования</h3>
+            </div>
+            <div class="modal-body">
+              Ваше имя:
+              <input type="text" id="userName" class="user-name-field" placeholder="Введите ваше имя">
+              <br>
+              Ваш ключ шифрования (<span id="generateKey" class="generateKey">Сгенерировать</span>. Генерация ключа может происходить до нескольких секунд. Не забудьте отправить его собеседнику):
+              <textarea name="creatorKey" id="creatorPublicKey" class="key-text-area input-large" rows="5" readonly></textarea>
+              Вставьте сюда ключ шифрования собеседника:
+              <textarea name="companionKey" id="companionPublicKey" class="key-text-area input-large" rows="5"></textarea>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary" id="startingWindowContinueButton" data-dismiss="modal" aria-hidden="true" disabled>Продолжить</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="modal fade" id="awaitingWindow" role="dialog" data-backdrop="static" data-keyboard="false" hidden>
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 id="myModalLabel">Ожидайте</h3>
-          </div>
-          <div class="modal-body">
-            Это окно будет автоматически закрыто, когда соединение будет установлено
+      <div class="modal fade" id="makeConnectionWindow" role="dialog" data-backdrop="static" data-keyboard="false" hidden>
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 id="myModalLabel">Комната</h3>
+            </div>
+            <div class="modal-body">
+              Ваш ID: <span class="modal-body__room-id" id="pid"></span>
+              <br>
+              Дождитесь, пока кто нибудь к вам присоединится, либо введите ID собеседника и нажмите кнопку Подключение
+              <br>
+              <input type="text" class="connection-id" id="connectionID" placeholder="ID собеседника">
+              <button class="btn btn-primary" id="connect" aria-hidden="true" disabled>Подключение</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="chat-box">
-      <div class="chat-box__header">История сообщений</div>
-      <div id="messagesBox" class="chat-box__messages">
+      <div class="modal fade" id="awaitingWindow" role="dialog" data-backdrop="static" data-keyboard="false" hidden>
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 id="myModalLabel">Ожидайте</h3>
+            </div>
+            <div class="modal-body">
+              Это окно будет автоматически закрыто, когда соединение будет установлено
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="chat-box__footer">
-        <form id="send">
-          <input type="text" id="messageText" class="chat-box__message-text" placeholder="Enter message">
-          <button class="btn btn-primary chat-box__button-send" id="sendMessageButton" aria-hidden="true">Отправить</button>
-        </form>
-        <!--<button id="close">Close connection</button>-->
-        <div class="box"></div>
+
+      <div class="chat-box">
+        <div class="chat-box__header">История сообщений</div>
+        <div id="messagesBox" class="chat-box__messages">
+          <div class="chat-box__message guest-message">q</div>
+          <div class="chat-box__message my-message">Another test.</div>
+          <div class="chat-box__message guest-message">This is a test</div>
+          <div class="chat-box__message my-message">Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.</div>
+          <div class="chat-box__message guest-message">This is a test</div>
+          <div class="chat-box__message my-message">Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.</div>
+          <div class="chat-box__message guest-message">This is a test</div>
+          <div class="chat-box__message my-message">Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.</div></div>
+
+        <div class="chat-box__footer">
+          <form id="send">
+            <input type="text" id="messageText" class="chat-box__message-text" placeholder="Enter message">
+            <button class="btn btn-primary chat-box__button-send" id="sendMessageButton" aria-hidden="true">Отправить</button>
+          </form>
+          <div class="box"></div>
+        </div>
       </div>
     </div>
   </div>

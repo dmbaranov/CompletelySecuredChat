@@ -1,19 +1,13 @@
 body {
   background: $light-grey;
+}
 
-  @include mq-xs {
-    background: red;
+@include mq-xs {
+  .container {
+    padding: 0;
   }
 
-  @include mq-sm {
-    background: green;
-  }
-
-  @include mq-md {
-    background: blue;
-  }
-
-  @include mq-lg {
-    background: black;
+  .container-fluid {
+    padding: 0;
   }
 }
