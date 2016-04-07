@@ -11,18 +11,15 @@
 }
 
 .chat-box__header {
-  margin-bottom: 30px;
-
-  padding: 25px;
+  padding-top: 20px;
+  padding-bottom: 30px;
+  padding-left: 4.166667%;
 
   color: white;
   font-size: $font-lg-medium;
 
   background: $indigo;
-
-  @include mq-xs {
-    padding: 25px;
-  }
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.5);
 }
 
 .chat-box__messages {
@@ -34,9 +31,19 @@
   overflow-y: auto;
 }
 
+
 .chat-box__message-wrapper {
   position: relative;
-  @include col-xs-24;
+
+  display: flex;
+  flex-direction: column;
+
+  @include col-xs-22;
+  @include col-xs-offset-1;
+}
+
+.chat-box__message-wrapper:last-of-type {
+  margin-bottom: 100px;
 }
 
 .chat-box__message {
@@ -45,54 +52,57 @@
   margin: 15px 0;
 
   padding: 0 15px;
-  max-width: 250px;
+  max-width: 66.66666667%;
 
   font-size: $font-lg-big;
-  
-  @include mq-xs {
-    max-width: 66.66666667%;
-  }
 }
 
 .my-message {
-  left: 28vw;
-
-  display: flex;
-  justify-content: flex-end;
+  align-self: flex-end;
 
   background: #E0E0E0;
-
-  //@include col-xs-offset-5;
 }
 
 .guest-message {
-  margin-right: 15vw;
+  align-self: flex-start;
+
   color: white;
 
   background: $indigo;
-
-  //@include col-xs-offset-1;
 }
 
 .chat-box__footer {
-  position: absolute;
-  bottom: 25px;
-  margin: 15px 0;
+  position: fixed;
+  bottom: 0;
 
   display: flex;
-  height: 50px;
+  width: 100%;
+  height: 80px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 
-  @include mq-xs {
-    width: 100%;
+  background:$lighter-grey;
+
+  @include mq-md {
+    width: $device-md - 52px;
+  }
+
+  @include mq-lg {
+    width: $device-lg - 60px;
   }
 }
 
 .chat-box__message-text-wrapper {
-  margin-left: 5vw;
-
   height: 50px;
-  background: #f00;
-  width: 55vw;
+
+  @include col-xs-13;
+  @include col-xs-offset-1;
+  @include col-sm-17;
+  @include col-sm-offset-1;
+  @include col-md-18;
+  @include col-md-offset-1;
+  @include col-lg-19;
+  @include col-lg-offset-1;
 }
 
 .chat-box__message-text {
@@ -103,13 +113,21 @@
 }
 
 .chat-box__button-send-wrapper {
-  margin-left: 5vw;
-
-  width: 30vw;
   display: flex;
   justify-content: flex-end;
+
+  @include col-xs-8;
+  @include col-xs-offset-1;
+  @include col-sm-4;
+  @include col-sm-offset-1;
+  @include col-md-3;
+  @include col-md-offset-1;
+  @include col-lg-2;
+  @include col-lg-offset-1;
 }
 
 .chat-box__button-send {
-  width: 100%;
+  min-width: 16.666667%;
+
+  @include col-xs-offset-1;
 }

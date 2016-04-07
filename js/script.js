@@ -52,8 +52,8 @@
     $('#userName').on('input', this.renderStartingWindow.bind(this));
     $('#connectionID').on('input', this.renderConnectionWindow);
 
-    $('#startingWindow').modal('hide');
-    $('#makeConnectionWindow').modal('hide');
+    /*$('#startingWindow').modal('hide');
+    $('#makeConnectionWindow').modal('hide');*/
   };
 
   Chat.prototype.generatePassword = function () {
@@ -84,11 +84,15 @@
     } else {
       //Handle received messages
       c.on('data', function (data) {
-        var msg = document.createElement('div');
+        var wrapper = document.createElement('div'),
+            messageElem = document.createElement('div');
         var tData = JSON.parse(data);
-        msg.classList.add('chat-box__message', 'guest-message');
-        msg.innerHTML = cryptico.decrypt(tData.cipher, __self.userPrivateRSAKey).plaintext;
-        __self.messagesBox.prepend(msg);
+        wrapper.classList.add('chat-box__message-wrapper');
+        messageElem.classList.add('chat-box__message', 'guest-message')
+        messageElem.innerHTML = cryptico.decrypt(tData.cipher, __self.userPrivateRSAKey).plaintext;
+
+        wrapper.appendChild(messageElem);
+        __self.messagesBox.append(wrapper);
         console.log('Received: ' + data);
       });
       c.on('close', function () {
@@ -125,21 +129,22 @@
   Chat.prototype.sendMessage = function (e) {
     e.preventDefault();
 
-    window.scrollTo(0, 50);
-
     var time = new Date(),
         hours = time.getHours() < 10 ? ('0' + time.getHours()) : time.getHours(),
         minutes = time.getMinutes() < 10 ? ('0' + time.getMinutes()) : time.getMinutes()
         seconds = time.getSeconds() < 10 ? ('0' + time.getSeconds()) : time.getSeconds()
     //var msg = '[' + hours + ':' + minutes + ':' + seconds +'] ' + this.userName + ': ' + $('#messageText').val(),
     var msg = $('#messageText').val();
-    var elem = document.createElement('div');
+    var wrapper = document.createElement('div'),
+        messageElem = document.createElement('div');
+    wrapper.classList.add('chat-box__message-wrapper');
+    messageElem.classList.add('chat-box__message', 'my-message');
 
-    elem.classList.add('chat-box__message', 'my-message');
-    elem.innerHTML = msg;
+    messageElem.innerHTML = msg;
     msg = cryptico.encrypt(msg, this.companionPublicRSAKey);
 
-    this.messagesBox.prepend(elem);
+    wrapper.appendChild(messageElem);
+    this.messagesBox.append(wrapper);
 
     this.connection.send(JSON.stringify(msg));
     $('#messageText').val('');
