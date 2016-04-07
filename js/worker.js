@@ -1,5 +1,5 @@
-var data = '123';
+var data = "123";
 
-onmessage = function (e) {
+onmessage = function(e) {
   postMessage(data);
 }

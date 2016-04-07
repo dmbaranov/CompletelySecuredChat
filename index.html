@@ -75,23 +75,53 @@
       </div>
 
       <div class="chat-box">
-        <div class="chat-box__header">История сообщений</div>
-        <div id="messagesBox" class="chat-box__messages">
-          <div class="chat-box__message guest-message">q</div>
-          <div class="chat-box__message my-message">Another test.</div>
-          <div class="chat-box__message guest-message">This is a test</div>
-          <div class="chat-box__message my-message">Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.</div>
-          <div class="chat-box__message guest-message">This is a test</div>
-          <div class="chat-box__message my-message">Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.</div>
-          <div class="chat-box__message guest-message">This is a test</div>
-          <div class="chat-box__message my-message">Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.</div></div>
+        <div class="chat-box__header">Сообщения</div>
+        <div class="chat-box__messages">
+          <div class="chat-box__message-wrapper">
+            <div class="chat-box__message guest-message">q</div>
+          </div>
+          <div class="chat-box__message-wrapper">
+            <div class="chat-box__message my-message">Another test.</div>
+          </div>
+          <div class="chat-box__message-wrapper">
+            <div class="chat-box__message guest-message">This is a test</div>
+          </div>
+          <div class="chat-box__message-wrapper">
+            <div class="chat-box__message my-message">Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.</div>
+          </div>
+          <div class="chat-box__message-wrapper">
+            <div class="chat-box__message guest-message">q</div>
+          </div>
+          <div class="chat-box__message-wrapper">
+            <div class="chat-box__message my-message">Another test.</div>
+          </div>
+          <div class="chat-box__message-wrapper">
+            <div class="chat-box__message guest-message">This is a test</div>
+          </div>
+          <div class="chat-box__message-wrapper">
+            <div class="chat-box__message my-message">Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.</div>
+          </div>
+          <div class="chat-box__message-wrapper">
+            <div class="chat-box__message guest-message">q</div>
+          </div>
+          <div class="chat-box__message-wrapper">
+            <div class="chat-box__message my-message">Another test.</div>
+          </div>
+          <div class="chat-box__message-wrapper">
+            <div class="chat-box__message guest-message">This is a test</div>
+          </div>
+          <div class="chat-box__message-wrapper">
+            <div class="chat-box__message my-message">Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.Another test. Just some king of very long message.</div>
+          </div>
+        </div>
 
         <div class="chat-box__footer">
-          <form id="send">
+          <div class="chat-box__message-text-wrapper">
             <input type="text" id="messageText" class="chat-box__message-text" placeholder="Enter message">
+          </div>
+          <div class="chat-box__button-send-wrapper">
             <button class="btn btn-primary chat-box__button-send" id="sendMessageButton" aria-hidden="true">Отправить</button>
-          </form>
-          <div class="box"></div>
+          </div>
         </div>
       </div>
     </div>

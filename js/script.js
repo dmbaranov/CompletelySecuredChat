@@ -1,5 +1,6 @@
 (function () {
   var Chat = function () {
+    this.worker = new Worker('worker.js');
     this.peer = {};
     this.connection = {};
     this.connectedPeers = {};
@@ -123,6 +124,8 @@
 
   Chat.prototype.sendMessage = function (e) {
     e.preventDefault();
+
+    window.scrollTo(0, 50);
 
     var time = new Date(),
         hours = time.getHours() < 10 ? ('0' + time.getHours()) : time.getHours(),
