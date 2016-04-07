@@ -52,6 +52,12 @@
     $('#userName').on('input', this.renderStartingWindow.bind(this));
     $('#connectionID').on('input', this.renderConnectionWindow);
 
+    $('#messageText').keypress(function (e) {
+      if(e.which == 13) {
+        $('#sendMessageButton').trigger('click');
+      }
+    });
+
     /*$('#startingWindow').modal('hide');
     $('#makeConnectionWindow').modal('hide');*/
   };
@@ -86,13 +92,20 @@
       c.on('data', function (data) {
         var wrapper = document.createElement('div'),
             messageElem = document.createElement('div');
-        var tData = JSON.parse(data);
+        var tData = JSON.parse(data),
+            msg = '';
+
+        msg = cryptico.decrypt(tData.cipher, __self.userPrivateRSAKey).plaintext;
+        msg = Base64.decode(msg);
+
         wrapper.classList.add('chat-box__message-wrapper');
         messageElem.classList.add('chat-box__message', 'guest-message')
         messageElem.innerHTML = cryptico.decrypt(tData.cipher, __self.userPrivateRSAKey).plaintext;
+        messageElem.innerHTML = msg;
 
         wrapper.appendChild(messageElem);
         __self.messagesBox.append(wrapper);
+
         console.log('Received: ' + data);
       });
       c.on('close', function () {
@@ -141,6 +154,7 @@
     messageElem.classList.add('chat-box__message', 'my-message');
 
     messageElem.innerHTML = msg;
+    msg = Base64.encode(msg);
     msg = cryptico.encrypt(msg, this.companionPublicRSAKey);
 
     wrapper.appendChild(messageElem);
