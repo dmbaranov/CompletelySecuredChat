@@ -73,6 +73,8 @@
   };
 
   Chat.prototype.generateRSAKeys = function () {
+    //use new Worker(js/worker.js)
+
     this.pass = this.generatePassword();
     this.userPrivateRSAKey = cryptico.generateRSAKey(this.pass, 512);
     this.userPublicRSAKey = cryptico.publicKeyString(this.userPrivateRSAKey);
@@ -93,7 +95,8 @@
         var wrapper = document.createElement('div'),
             messageElem = document.createElement('div');
         var tData = JSON.parse(data),
-            msg = '';
+            msg = '',
+            boxHeight = document.querySelector('#messagesBox').scrollHeight;
 
         msg = cryptico.decrypt(tData.cipher, __self.userPrivateRSAKey).plaintext;
         msg = Base64.decode(msg);
@@ -105,6 +108,8 @@
 
         wrapper.appendChild(messageElem);
         __self.messagesBox.append(wrapper);
+
+        __self.messagesBox.scrollTop(boxHeight);
 
         console.log('Received: ' + data);
       });
@@ -142,7 +147,8 @@
   Chat.prototype.sendMessage = function (e) {
     e.preventDefault();
 
-    var time = new Date(),
+    var boxHeight = document.querySelector('#messagesBox').scrollHeight,
+        time = new Date(),
         hours = time.getHours() < 10 ? ('0' + time.getHours()) : time.getHours(),
         minutes = time.getMinutes() < 10 ? ('0' + time.getMinutes()) : time.getMinutes()
         seconds = time.getSeconds() < 10 ? ('0' + time.getSeconds()) : time.getSeconds()
@@ -162,6 +168,7 @@
 
     this.connection.send(JSON.stringify(msg));
     $('#messageText').val('');
+    this.messagesBox.scrollTop(boxHeight);
     console.log('Send: ' + JSON.stringify(msg));
   }
 

@@ -43,7 +43,7 @@
 }
 
 .chat-box__message-wrapper:last-of-type {
-  margin-bottom: 100px;
+ padding-bottom: 100px;
 }
 
 .chat-box__message {
@@ -55,6 +55,7 @@
   max-width: 66.66666667%;
 
   font-size: $font-lg-big;
+  white-space: pre-wrap;
 }
 
 .my-message {
