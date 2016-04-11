@@ -43,7 +43,7 @@
       $('#startingWindow').modal('hide');
       $('#makeConnectionWindow').modal('show');
       $('#pid').html(__self.peer.id);
-      __self.userName = $('#userName').val();
+      __self.userName = $('#userName').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
     });
 
     //MakeConnectionWindow
@@ -60,8 +60,8 @@
       if(e.which == 13) {
         $('#sendMessageButton').trigger('click');
       }
-      __self.sendTypingState();
     });
+    $('#messageText').on('input', this.sendTypingState.bind(this));
 
     /*$('#startingWindow').modal('hide');
     $('#makeConnectionWindow').modal('hide');*/
@@ -87,7 +87,7 @@
   };
 
   Chat.prototype.setCompanionRSAKey = function () {
-    this.companionPublicRSAKey = $('#companionPublicKey').val();
+    this.companionPublicRSAKey = $('#companionPublicKey').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
     this.renderStartingWindow();
   };
 
@@ -129,8 +129,10 @@
         console.log('Received: ' + data);
       });
       c.on('close', function () {
-        console.log('Someone has left');
+        console.log('Companion has left');
+        __self.connection = {};
         delete __self.connectedPeers[c.peer];
+        $('#messageText').prop('disabled', true);
       });
     }
     if(Object.keys(this.connection).length == 0) {
@@ -143,7 +145,7 @@
 
   Chat.prototype.onConnectClick = function () {
     var __self = this;
-    var RequestedPeer = $('#connectionID').val()
+    var RequestedPeer = $('#connectionID').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");;
     if(!this.connectedPeers[RequestedPeer]) {
       var c = this.peer.connect(RequestedPeer, {
         label: 'chat',
@@ -170,7 +172,7 @@
         minutes = time.getMinutes() < 10 ? ('0' + time.getMinutes()) : time.getMinutes()
         seconds = time.getSeconds() < 10 ? ('0' + time.getSeconds()) : time.getSeconds()
     //var msg = '[' + hours + ':' + minutes + ':' + seconds +'] ' + this.userName + ': ' + $('#messageText').val(),
-    var msg = $('#messageText').val();
+    var msg = $('#messageText').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
     var wrapper = document.createElement('div'),
         messageElem = document.createElement('div');
     wrapper.classList.add('chat-box__message-wrapper');
@@ -185,6 +187,7 @@
 
     this.connection.send(JSON.stringify(msg));
     $('#messageText').val('');
+    this.sendTypingState();
     this.messagesBox.scrollTop(boxHeight);
     console.log('Send: ' + JSON.stringify(msg));
   };
