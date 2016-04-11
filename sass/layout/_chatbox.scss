@@ -132,3 +132,14 @@
 
   @include col-xs-offset-1;
 }
+
+.chat-box__is-typing {
+  position: absolute;
+  top: -15px;
+
+  display: none;
+  width: 100%;
+
+  text-align: center;
+  color: $normal-grey;
+}

@@ -10,6 +10,7 @@
     this.userPublicRSAKey = '';
     this.companionPublicRSAKey = '';
     this.messagesBox = $('#messagesBox');
+    this.isTyping = '';
 
     this.init();
   };
@@ -25,6 +26,8 @@
         console.log(copy);
       }
     });
+
+    this.isTyping = false;
 
     this.peer.on('connection', this.connect.bind(this));
     this.peer.on('error', function (err) {
@@ -57,6 +60,7 @@
       if(e.which == 13) {
         $('#sendMessageButton').trigger('click');
       }
+      __self.sendTypingState();
     });
 
     /*$('#startingWindow').modal('hide');
@@ -93,6 +97,7 @@
     } else {
       //Handle received messages
       c.on('data', function (data) {
+
         var wrapper = document.createElement('div'),
             messageElem = document.createElement('div');
         var tData = JSON.parse(data),
@@ -102,15 +107,24 @@
         msg = cryptico.decrypt(tData.cipher, __self.userPrivateRSAKey).plaintext;
         msg = Base64.decode(msg);
 
-        wrapper.classList.add('chat-box__message-wrapper');
-        messageElem.classList.add('chat-box__message', 'guest-message')
-        messageElem.innerHTML = cryptico.decrypt(tData.cipher, __self.userPrivateRSAKey).plaintext;
-        messageElem.innerHTML = msg;
 
-        wrapper.appendChild(messageElem);
-        __self.messagesBox.append(wrapper);
+        if(msg == '{{<currentUserIsTyping>}}') {
+          $('#typingState').fadeIn('slow');
+        }
+        else if(msg == '{{<currentUserHasStoppedTyping>}}') {
+          $('#typingState').fadeOut('slow');
+        }
+        else {
+          wrapper.classList.add('chat-box__message-wrapper');
+          messageElem.classList.add('chat-box__message', 'guest-message')
+          messageElem.innerHTML = cryptico.decrypt(tData.cipher, __self.userPrivateRSAKey).plaintext;
+          messageElem.innerHTML = msg;
 
-        __self.messagesBox.scrollTop(boxHeight);
+          wrapper.appendChild(messageElem);
+          __self.messagesBox.append(wrapper);
+
+          __self.messagesBox.scrollTop(boxHeight);
+        }
 
         console.log('Received: ' + data);
       });
@@ -173,7 +187,26 @@
     $('#messageText').val('');
     this.messagesBox.scrollTop(boxHeight);
     console.log('Send: ' + JSON.stringify(msg));
-  }
+  };
+
+  Chat.prototype.sendTypingState = function () {
+    if($('#messageText').val().length > 0 && this.isTyping == false) {
+      var msg = '{{<currentUserIsTyping>}}';
+      msg = Base64.encode(msg);
+      msg = cryptico.encrypt(msg, this.companionPublicRSAKey);
+      this.connection.send(JSON.stringify(msg));
+
+      this.isTyping = true;
+    }
+    else if($('#messageText').val().length == 0){
+      var msg = '{{<currentUserHasStoppedTyping>}}';
+      msg = Base64.encode(msg);
+      msg = cryptico.encrypt(msg, this.companionPublicRSAKey);
+      this.connection.send(JSON.stringify(msg));
+
+      this.isTyping = false;
+    }
+  };
 
   Chat.prototype.renderStartingWindow = function () {
     $('#creatorPublicKey').html(this.userPublicRSAKey);

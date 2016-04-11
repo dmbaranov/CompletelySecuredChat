@@ -329,6 +329,15 @@ body {
   margin-left: 4.16666667%;
 }
 
+.chat-box__is-typing {
+  position: absolute;
+  top: -15px;
+  display: none;
+  width: 100%;
+  text-align: center;
+  color: #bdbdbd;
+}
+
 label,
 textarea {
   vertical-align: top;
