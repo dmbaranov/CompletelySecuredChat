@@ -5,12 +5,12 @@
     this.connection = {};
     this.connectedPeers = {};
     this.pass = '';
-    this.userName = '';
     this.userPrivateRSAKey = ''
     this.userPublicRSAKey = '';
     this.companionPublicRSAKey = '';
     this.messagesBox = $('#messagesBox');
     this.isTyping = '';
+    this.isMenuHidden = true;
 
     this.init();
   };
@@ -19,7 +19,7 @@
     var __self = this;
 
     this.peer = new Peer({
-      key: 'x7fwx2kavpy6tj4i',
+      key: 'dkp6zru1riugcik9',
       debug: 3,
       logFunction: function() {
         var copy = Array.prototype.slice.call(arguments).join(' ');
@@ -29,12 +29,49 @@
 
     this.isTyping = false;
 
+    this.peer.on('open', function () {
+      $('#pid').html(__self.peer.id);
+    });
     this.peer.on('connection', this.connect.bind(this));
     this.peer.on('error', function (err) {
       console.log('Error: ' + err);
     });
 
-    //StartingWindow
+
+
+    $('#menuButton').click(this.onMenuClick.bind(this));
+
+    $('#generateKey').click(this.generateRSAKeys.bind(this));
+    $('#chatBoxMyKeyButton').click(function () {
+      $('#chatBoxMyKey').fadeOut('slow', function () {
+        $('#chatBoxCompanionKey').fadeIn('slow');
+      });
+    });
+
+    $('#chatBoxCompanionKeyButton').click(function () {
+      __self.setCompanionRSAKey();
+      $('#chatBoxCompanionKey').fadeOut('slow', function () {
+        $('#chatBoxMenuConnection').fadeIn('slow');
+      });
+    });
+    $('#companionPublicKey').on('input', this.renderCompanionKey.bind(this));
+
+    $('#connectionID').on('input', this.renderConnection.bind(this));
+    $('#buttonConnect').click(this.onConnectClick.bind(this));
+
+    $('#sendMessageButton').click(this.sendMessage.bind(this));
+    $('#messageText').keypress(function (e) {
+      if(e.which == 13) {
+        $('#sendMessageButton').trigger('click');
+      }
+    });
+    $('#messageText').on('input', this.sendTypingState.bind(this));
+
+
+
+
+
+    /*//StartingWindow
     $('#startingWindow').modal('show');
     $('#generateKey').click(this.generateRSAKeys.bind(this));
     $('#companionPublicKey').on('input', this.setCompanionRSAKey.bind(this));
@@ -42,7 +79,7 @@
     $('#startingWindowContinueButton').click(function () {
       $('#startingWindow').modal('hide');
       $('#makeConnectionWindow').modal('show');
-      $('#pid').html(__self.peer.id);
+      //$('#pid').html(__self.peer.id);
       __self.userName = $('#userName').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
     });
 
@@ -55,16 +92,17 @@
     }).bind(this));
 
     //MainWindow
+    $('#menuButton').click(this.onMenuClick.bind(this));
     $('#sendMessageButton').click(this.sendMessage.bind(this));
     $('#messageText').keypress(function (e) {
       if(e.which == 13) {
         $('#sendMessageButton').trigger('click');
       }
     });
-    $('#messageText').on('input', this.sendTypingState.bind(this));
+    $('#messageText').on('input', this.sendTypingState.bind(this));*/
 
-    /*$('#startingWindow').modal('hide');
-    $('#makeConnectionWindow').modal('hide');*/
+    $('#startingWindow').modal('hide');
+    $('#makeConnectionWindow').modal('hide');
   };
 
   Chat.prototype.generatePassword = function () {
@@ -83,18 +121,21 @@
     this.pass = this.generatePassword();
     this.userPrivateRSAKey = cryptico.generateRSAKey(this.pass, 512);
     this.userPublicRSAKey = cryptico.publicKeyString(this.userPrivateRSAKey);
-    this.renderStartingWindow();
+    this.renderMyKey();
   };
 
   Chat.prototype.setCompanionRSAKey = function () {
     this.companionPublicRSAKey = $('#companionPublicKey').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    this.renderStartingWindow();
   };
 
   Chat.prototype.connect = function (c) {
+    $('#messageText').prop('disabled', false);
+    $('#sendMessageButton').prop('disabled', false);
+
     var __self = this;
     if (c.label != 'chat') {
-    } else {
+    }
+    else {
       //Handle received messages
       c.on('data', function (data) {
 
@@ -139,8 +180,6 @@
       this.connectedPeers[c.peer] = 1;
       this.connection = c;
     }
-    $('#awaitingWindow').modal('hide');
-    $('#makeConnectionWindow').modal('hide');
   };
 
   Chat.prototype.onConnectClick = function () {
@@ -154,6 +193,8 @@
       });
 
       c.on('open', function () {
+        $('#messageText').prop('disabled', false);
+        $('#sendMessageButton').prop('disabled', false);
         __self.connect(c);
       });
       c.on('error', function (err) {
@@ -211,25 +252,38 @@
     }
   };
 
-  Chat.prototype.renderStartingWindow = function () {
-    $('#creatorPublicKey').html(this.userPublicRSAKey);
+  Chat.prototype.onMenuClick = function () {
+    var toLeft = this.isMenuHidden ? '0' : '100%';
+    console.log(toLeft);
+    $('#chatboxMenu').animate({
+      left: toLeft
+    }, 500);
 
-    if($('#companionPublicKey').val().length > 0 && this.userPublicRSAKey.length > 0 && $('#userName').val().length > 0) {
-      $('#startingWindowContinueButton').prop('disabled', false);
+    this.isMenuHidden = !this.isMenuHidden;
+  }
+
+  Chat.prototype.renderMyKey = function () {
+    $('#myPublicKey').html(this.userPublicRSAKey);
+    $('#chatBoxMyKeyButton').prop('disabled', false);
+  };
+
+  Chat.prototype.renderCompanionKey = function () {
+    if($('#companionPublicKey').val().length > 0) {
+      $('#chatBoxCompanionKeyButton').prop('disabled', false);
     }
     else {
-    $('#startingWindowContinueButton').prop('disabled', true);
+      $('#chatBoxCompanionKeyButton').prop('disabled', true);
     }
   };
 
-  Chat.prototype.renderConnectionWindow = function () {
+  Chat.prototype.renderConnection = function () {
     if($('#connectionID').val().length > 0) {
-      $('#connect').prop('disabled', false);
+      $('#buttonConnect').prop('disabled', false);
     }
     else {
-      $('#connect').prop('disabled', true);
+      $('#buttonConnect').prop('disabled', true);
     }
-  };
+  }
 
   window.peerjschat = new Chat();
 

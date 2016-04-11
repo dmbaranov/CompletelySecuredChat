@@ -31,13 +31,13 @@
               Ваше имя:
               <input type="text" id="userName" class="user-name-field" placeholder="Введите ваше имя">
               <br>
-              Ваш ключ шифрования (<span id="generateKey" class="generateKey">Сгенерировать</span>. Генерация ключа может происходить до нескольких секунд. Не забудьте отправить его собеседнику):
-              <textarea name="creatorKey" id="creatorPublicKey" class="key-text-area input-large" rows="5" readonly></textarea>
-              Вставьте сюда ключ шифрования собеседника:
-              <textarea name="companionKey" id="companionPublicKey" class="key-text-area input-large" rows="5"></textarea>
+              <!--Ваш ключ шифрования (<span id="generateKey" class="generateKey">Сгенерировать</span>. Генерация ключа может происходить до нескольких секунд. Не забудьте отправить его собеседнику):
+              <textarea name="creatorKey" id="creatorPublicKey" class="key-text-area input-large" rows="5" readonly></textarea>-->
+              <!--Вставьте сюда ключ шифрования собеседника:
+              <textarea name="companionKey" id="companionPublicKey" class="key-text-area input-large" rows="5"></textarea>-->
             </div>
             <div class="modal-footer">
-              <button class="btn btn-primary" id="startingWindowContinueButton" data-dismiss="modal" aria-hidden="true" disabled>Продолжить</button>
+              <!--<button class="btn btn-primary" id="startingWindowContinueButton" data-dismiss="modal" aria-hidden="true" disabled>Продолжить</button>-->
             </div>
           </div>
         </div>
@@ -50,12 +50,12 @@
               <h3>Комната</h3>
             </div>
             <div class="modal-body">
-              Ваш ID: <span class="modal-body__room-id" id="pid"></span>
+              <!--Ваш ID: <span class="modal-body__room-id" id="pid"></span>-->
               <br>
               Дождитесь, пока кто нибудь к вам присоединится, либо введите ID собеседника и нажмите кнопку Подключение
               <br>
-              <input type="text" class="connection-id" id="connectionID" placeholder="ID собеседника">
-              <button class="btn btn-primary" id="connect" aria-hidden="true" disabled>Подключение</button>
+              <!--<input type="text" class="connection-id" id="connectionID" placeholder="ID собеседника">
+              <button class="btn btn-primary" id="connect" aria-hidden="true" disabled>Подключение</button>-->
             </div>
           </div>
         </div>
@@ -75,16 +75,49 @@
       </div>
 
       <section class="chat-box">
-        <div class="chat-box__header">Сообщения</div>
-        <div id="messagesBox" class="chat-box__messages"></div>
+        <div class="chat-box__header">
+          <div class="chat-box__header-title">Сообщения</div>
+          <div class="chat-box__header-menu" id="menuButton">
+            <img src="img/icon-menu.svg" alt="Menu">
+          </div>
+        </div>
+        <div id="messagesBox" class="chat-box__messages">
+          <div class="chat-box__message-wrapper"></div>
+        </div>
 
         <div class="chat-box__footer">
           <div id="typingState" class="chat-box__is-typing">Собеседник что-то печатает...</div>
           <div class="chat-box__message-text-wrapper">
-            <input type="text" id="messageText" class="chat-box__message-text" placeholder="Enter message">
+            <input type="text" id="messageText" class="chat-box__message-text" placeholder="Введите сообщение" disabled>
           </div>
           <div class="chat-box__button-send-wrapper">
-            <button class="btn btn-primary chat-box__button-send" id="sendMessageButton" aria-hidden="true">Отправить</button>
+            <input type="button" id="sendMessageButton" class="btn btn-primary chat-box__button-send" aria-hidden="true" value="Отправить" disabled> <!-- Make this button instead of input if there will be any errors -->
+          </div>
+        </div>
+
+        <div id="chatboxMenu" class="chat-box__menu">
+          <div class="chat-box__menu-item chat-box__menu-id">Ваш ID: <span id="pid"></span></div>
+          <div class="chat-box__menu-item hat-box__menu-status">Статус: <span id="connectionStatus" class="chat-box__menu-status--not-connected">Не подключен</span></div>
+
+          <div id="chatBoxMyKey" class="chat-box__menu-item chat-box__menu__key-field">
+            Ваш ключ шифрования (<span id="generateKey" class="generateKey">Сгенерировать</span>. Генерация ключа может происходить до нескольких секунд. Не забудьте отправить его собеседнику):
+            <textarea name="creatorKey" id="myPublicKey" class="chat-box__menu__key-text-area" rows="5" readonly></textarea>
+            <input id="chatBoxMyKeyButton" type="button" class="btn btn-primary chat-box__menu__key-button" value="Далее" disabled>
+          </div>
+
+          <div id="chatBoxCompanionKey" class="chat-box__menu-item chat-box__menu__key-field" hidden>
+            Вставьте сюда ключ шифрования собеседника:
+            <textarea name="companionKey" id="companionPublicKey" class="key-text-area" rows="5"></textarea>
+            <input id="chatBoxCompanionKeyButton" type="button" class="btn btn-primary chat-box__menu__key-button" value="Далее" disabled>
+          </div>
+
+          <div id="chatBoxMenuConnection" class="chat-box__menu-item chat-box__menu__connection" hidden>
+            Дождитесь, пока кто нибудь к вам присоединится, либо введите ID собеседника и нажмите кнопку Подключение
+            <br>
+            <div class="chat-box__menu__connection__control-wrapper">
+              <input type="text" id="connectionID" class="form-control chat-box__menu__connection__id-input" placeholder="ID собеседника">
+              <input type="button" id="buttonConnect" class="btn btn-primary chat-box__menu__connection__button" aria-hidden="true" value="Подключение" disabled>
+            </div>
           </div>
         </div>
       </section>

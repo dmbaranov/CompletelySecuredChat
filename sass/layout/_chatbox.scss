@@ -7,19 +7,31 @@
 
   background: $lighter-grey;
 
+  overflow: hidden;
+
   @include col-xs-24;
 }
 
 .chat-box__header {
+  display: flex;
+  justify-content: space-between;
   padding-top: 20px;
   padding-bottom: 30px;
-  padding-left: 4.166667%;
-
-  color: white;
-  font-size: $font-lg-medium;
-
+  
   background: $indigo;
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.5);
+}
+
+.chat-box__header-title {
+  padding-left: 4.166667%;
+
+  color: $white;
+  font-size: $font-medium;
+}
+
+.chat-box__header-menu {
+  padding-top: 3px;
+  padding-right: 4.166667%;
 }
 
 .chat-box__messages {
@@ -54,7 +66,7 @@
   padding: 0 15px;
   max-width: 66.66666667%;
 
-  font-size: $font-lg-big;
+  font-size: $font-big;
   white-space: pre-wrap;
 }
 
@@ -135,11 +147,68 @@
 
 .chat-box__is-typing {
   position: absolute;
-  top: -15px;
+  top: -4%;
 
   display: none;
   width: 100%;
 
   text-align: center;
   color: $normal-grey;
+}
+
+.chat-box__menu {
+  position: absolute;
+  top: 83px;
+  left: 100%;
+
+  width: 100%;
+  height: 100%;
+
+  background: #eeeeee;
+
+  overflow: auto;
+}
+
+.chat-box__menu-item {
+  padding: 1% 4%;
+
+  color: $black;
+  font-size: $font-medium;
+}
+
+.chat-box__menu__key-field {
+  font-size: $font-small;
+}
+
+.chat-box__menu-status--not-connected {
+  color: $red;
+}
+
+.chat-box__menu-status--connected {
+  color: $green;
+}
+
+.chat-box__menu__key-button {
+  margin-top: 4.166667%;
+
+  width: 25%;
+
+  @include col-xs-offset-18;
+}
+
+.chat-box__menu__connection__control-wrapper {
+  display: flex;
+  justify-content: space-between;
+  
+  @include col-xs-24;
+}
+
+.chat-box__menu__connection__id-input {
+  display: inline-block;
+
+  @include col-xs-12;
+}
+
+.chat-box__menu__connection__button {
+  width: 41.66666667%;
 }
