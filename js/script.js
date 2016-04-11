@@ -9,7 +9,6 @@
     this.userPrivateRSAKey = ''
     this.userPublicRSAKey = '';
     this.companionPublicRSAKey = '';
-    this.requestedPeer = '';
     this.messagesBox = $('#messagesBox');
 
     this.init();
@@ -32,26 +31,28 @@
       console.log('Error: ' + err);
     });
 
+    //StartingWindow
     $('#startingWindow').modal('show');
     $('#generateKey').click(this.generateRSAKeys.bind(this));
-    $('#connect').click(this.onConnectClick.bind(this));
-    $('#sendMessageButton').click(this.sendMessage.bind(this));
+    $('#companionPublicKey').on('input', this.setCompanionRSAKey.bind(this));
+    $('#userName').on('input', this.renderStartingWindow.bind(this));
     $('#startingWindowContinueButton').click(function () {
       $('#startingWindow').modal('hide');
       $('#makeConnectionWindow').modal('show');
       $('#pid').html(__self.peer.id);
       __self.userName = $('#userName').val();
     });
+
+    //MakeConnectionWindow
+    $('#connect').click(this.onConnectClick.bind(this));
+    $('#connectionID').on('input', this.renderConnectionWindow);
     $('#connect').click((function () {
       $('#makeConnectionWindow').modal('hide');
       $('#awaitingWindow').modal('show');
-      this.requestedPeer = $('#connectionID').val()
     }).bind(this));
 
-    $('#companionPublicKey').on('input', this.setCompanionRSAKey.bind(this));
-    $('#userName').on('input', this.renderStartingWindow.bind(this));
-    $('#connectionID').on('input', this.renderConnectionWindow);
-
+    //MainWindow
+    $('#sendMessageButton').click(this.sendMessage.bind(this));
     $('#messageText').keypress(function (e) {
       if(e.which == 13) {
         $('#sendMessageButton').trigger('click');
@@ -118,17 +119,19 @@
         delete __self.connectedPeers[c.peer];
       });
     }
-    this.connectedPeers[c.peer] = 1;
-    this.connection = c;
+    if(Object.keys(this.connection).length == 0) {
+      this.connectedPeers[c.peer] = 1;
+      this.connection = c;
+    }
     $('#awaitingWindow').modal('hide');
     $('#makeConnectionWindow').modal('hide');
   };
 
   Chat.prototype.onConnectClick = function () {
     var __self = this;
-    var tempRequestedPeer = $('#connectionID').val()
-    if(!this.connectedPeers[tempRequestedPeer]) {
-      var c = this.peer.connect(tempRequestedPeer, {
+    var RequestedPeer = $('#connectionID').val()
+    if(!this.connectedPeers[RequestedPeer]) {
+      var c = this.peer.connect(RequestedPeer, {
         label: 'chat',
         serialization: 'none',
         metadata: {message: 'hi i want to chat with you!'}
@@ -141,7 +144,7 @@
         console.log(err);
       });
     }
-    this.connectedPeers[tempRequestedPeer] = 1;
+    this.connectedPeers[RequestedPeer] = 1;
   };
 
   Chat.prototype.sendMessage = function (e) {
@@ -170,10 +173,6 @@
     $('#messageText').val('');
     this.messagesBox.scrollTop(boxHeight);
     console.log('Send: ' + JSON.stringify(msg));
-  }
-
-  Chat.prototype.eachActiveConnection = function (fn) {
-
   }
 
   Chat.prototype.renderStartingWindow = function () {
