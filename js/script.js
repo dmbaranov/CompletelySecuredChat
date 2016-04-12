@@ -12,6 +12,7 @@
     this.isTyping = '';
     this.isMenuHidden = true;
     this.playMessageSound = '';
+    this.isConnected = false;
 
     this.init();
   };
@@ -45,7 +46,7 @@
 
     $('#menuButton').click(this.onMenuClick.bind(this));
 
-    $('#generateKey').click(this.generateRSAKeys.bind(this)); //for menu submenus
+    $('#generateKey').click(this.generateRSAKeys.bind(this)); //this and below are for submenus
     $('#chatBoxMyKeyButton').click(function () {
       $('#chatBoxMyKey').fadeOut(400, function () {
         $('#chatBoxCompanionKey').fadeIn(400);
@@ -55,7 +56,9 @@
     $('#chatBoxCompanionKeyButton').click(function () {
       __self.setCompanionRSAKey();
       $('#chatBoxCompanionKey').fadeOut(400, function () {
-        $('#chatBoxMenuConnection').fadeIn(400);
+        if(!__self.isConnected) {
+          $('#chatBoxMenuConnection').fadeIn(400);
+        }
       });
     });
     $('#companionPublicKey').on('input', this.renderCompanionKey.bind(this));
@@ -97,22 +100,15 @@
     this.companionPublicRSAKey = $('#companionPublicKey').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
   };
 
-  Chat.prototype.connect = function (c) { //TODO: additional condition for 5 lines below
-    /*$('#messageText').prop('disabled', false);
-    $('#sendMessageButton').prop('disabled', false);
-    $('#connectionStatus').html('Подключен').removeClass('chat-box__menu-status--not-connected chat-box__menu-status--awaiting').addClass('chat-box__menu-status--connected');
-    $('#chatBoxMenuConnection').fadeOut(400);*/
+  Chat.prototype.connect = function (c) {
 
     var __self = this;
     if (c.label == 'chat') {
       //Handle received messages
       c.on('data', function (data) {
 
-        var wrapper = document.createElement('div'),
-            messageElem = document.createElement('div');
         var tData = JSON.parse(data),
-            msg = '',
-            boxHeight = document.querySelector('#messagesBox').scrollHeight;
+            msg = '';
 
         msg = cryptico.decrypt(tData.cipher, __self.userPrivateRSAKey).plaintext;
         msg = Base64.decode(msg);
@@ -125,22 +121,17 @@
           $('#typingState').fadeOut('slow');
         }
         else {
-          wrapper.classList.add('chat-box__message-wrapper');
-          messageElem.classList.add('chat-box__message', 'guest-message')
-          //messageElem.innerHTML = cryptico.decrypt(tData.cipher, __self.userPrivateRSAKey).plaintext;
-          messageElem.innerHTML = msg;
-
-          wrapper.appendChild(messageElem);
-          __self.messagesBox.append(wrapper);
           __self.playMessageSound.play();
-          __self.messagesBox.scrollTop(boxHeight);
+          __self.renderNewMessage(msg, "guest-message");
         }
         console.log('Received: ' + data);
       });
 
+      //If companion left
       c.on('close', function () {
         console.log('Companion has left');
         __self.connection = {};
+        __self.isConnected = false;
         delete __self.connectedPeers[c.peer];
         $('#messageText').prop('disabled', true);
         $('#connectionStatus').html('Собеседник вышел').removeClass('chat-box__menu-status--connected chat-box__menu-status--awaiting').addClass('chat-box__menu-status--not-connected');
@@ -149,6 +140,7 @@
     if(Object.keys(this.connection).length == 0) { //if there is no active connections yet
       this.connectedPeers[c.peer] = 1;
       this.connection = c;
+      this.isConnected = true;
 
       $('#messageText').prop('disabled', false);
       $('#sendMessageButton').prop('disabled', false);
@@ -168,6 +160,8 @@
       });
 
       c.on('open', function () {
+        __self.isConnected = true;
+
         $('#messageText').prop('disabled', false);
         $('#sendMessageButton').prop('disabled', false);
         $('#connectionStatus').html('Подключен');
@@ -184,29 +178,15 @@
   Chat.prototype.sendMessage = function (e) {
     e.preventDefault();
 
-    var boxHeight = document.querySelector('#messagesBox').scrollHeight,
-        time = new Date(),
-        hours = time.getHours() < 10 ? ('0' + time.getHours()) : time.getHours(),
-        minutes = time.getMinutes() < 10 ? ('0' + time.getMinutes()) : time.getMinutes()
-        seconds = time.getSeconds() < 10 ? ('0' + time.getSeconds()) : time.getSeconds()
-    //var msg = '[' + hours + ':' + minutes + ':' + seconds +'] ' + this.userName + ': ' + $('#messageText').val(),
     var msg = $('#messageText').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    var wrapper = document.createElement('div'),
-        messageElem = document.createElement('div');
-    wrapper.classList.add('chat-box__message-wrapper');
-    messageElem.classList.add('chat-box__message', 'my-message');
 
-    messageElem.innerHTML = msg;
+    this.renderNewMessage(msg, "my-message");
+
     msg = Base64.encode(msg);
     msg = cryptico.encrypt(msg, this.companionPublicRSAKey);
 
-    wrapper.appendChild(messageElem);
-    this.messagesBox.append(wrapper);
-
     this.connection.send(JSON.stringify(msg));
-    $('#messageText').val('');
     this.sendTypingState();
-    this.messagesBox.scrollTop(boxHeight);
     console.log('Send: ' + JSON.stringify(msg));
   };
 
@@ -237,7 +217,7 @@
     }, 500);
 
     this.isMenuHidden = !this.isMenuHidden;
-  }
+  };
 
   Chat.prototype.renderMyKey = function () {
     $('#myPublicKey').html(this.userPublicRSAKey);
@@ -260,9 +240,25 @@
     else {
       $('#buttonConnect').prop('disabled', true);
     }
-  }
+  };
 
-  //TODO: render incoming message
+  Chat.prototype.renderNewMessage = function (m, cls) {
+    var boxHeight = document.querySelector('#messagesBox').scrollHeight;
+
+    var wrapper = document.createElement('div'),
+        messageElem = document.createElement('div');
+    wrapper.classList.add('chat-box__message-wrapper');
+    messageElem.classList.add('chat-box__message', cls);
+
+    messageElem.innerHTML = m;
+
+    wrapper.appendChild(messageElem);
+
+    this.messagesBox.append(wrapper);
+
+    $('#messageText').val('');
+    this.messagesBox.scrollTop(boxHeight);
+  };
 
   window.peerjschat = new Chat();
 
