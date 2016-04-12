@@ -137,6 +137,7 @@
     $('#sendMessageButton').prop('disabled', false);
     $('#connectionStatus').html('Подключен');
     $('#connectionStatus').removeClass('chat-box__menu-status--not-connected chat-box__menu-status--awaiting').addClass('chat-box__menu-status--connected');
+    $('#chatBoxMenuConnection').fadeOut(400);
 
     var __self = this;
     if (c.label != 'chat') {
