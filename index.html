@@ -35,7 +35,7 @@
             <input type="text" id="messageText" class="chat-box__message-text" placeholder="Введите сообщение" disabled>
           </div>
           <div class="chat-box__button-send-wrapper">
-            <input type="button" id="sendMessageButton" class="btn btn-primary chat-box__button-send" aria-hidden="true" value="Отправить" disabled> <!-- Make this button instead of input if there will be any errors -->
+            <input type="button" id="sendMessageButton" class="btn btn-primary chat-box__button-send" aria-hidden="true" value="Отправить" disabled autocomplete="off"> <!-- Make this button instead of input if there will be any errors -->
           </div>
         </div>
 
@@ -48,13 +48,13 @@
           <div id="chatBoxMyKey" class="chat-box__menu-item chat-box__menu__key-field">
             Ваш ключ шифрования (<span id="generateKey" class="generateKey">Сгенерировать</span>. Генерация ключа может происходить до нескольких секунд. Не забудьте отправить его собеседнику):
             <textarea name="creatorKey" id="myPublicKey" class="chat-box__menu__key-text-area" rows="5" readonly></textarea>
-            <input id="chatBoxMyKeyButton" type="button" class="btn btn-primary chat-box__menu__key-button" value="Далее" disabled>
+            <input id="chatBoxMyKeyButton" type="button" class="btn btn-primary chat-box__menu__key-button" value="Далее" disabled autocomplete="off">
           </div>
 
           <div id="chatBoxCompanionKey" class="chat-box__menu-item chat-box__menu__key-field" hidden>
             Вставьте сюда ключ шифрования собеседника:
             <textarea name="companionKey" id="companionPublicKey" class="key-text-area" rows="5"></textarea>
-            <input id="chatBoxCompanionKeyButton" type="button" class="btn btn-primary chat-box__menu__key-button" value="Далее" disabled>
+            <input id="chatBoxCompanionKeyButton" type="button" class="btn btn-primary chat-box__menu__key-button" value="Далее" disabled autocomplete="off">
           </div>
 
           <div id="chatBoxMenuConnection" class="chat-box__menu-item chat-box__menu__connection" hidden>
@@ -62,7 +62,7 @@
             <br>
             <div class="chat-box__menu__connection__control-wrapper">
               <input type="text" id="connectionID" class="form-control chat-box__menu__connection__id-input" placeholder="ID собеседника">
-              <input type="button" id="buttonConnect" class="btn btn-primary chat-box__menu__connection__button" aria-hidden="true" value="Подключение" disabled>
+              <input type="button" id="buttonConnect" class="btn btn-primary chat-box__menu__connection__button" aria-hidden="true" value="Подключение" disabled autocomplete="off">
             </div>
           </div>
 

@@ -273,6 +273,8 @@
 
 .chat-box__menu__connection__id-input {
   margin: 4.166667% 0;
+  margin-top: 16px; //Fucking Firefox Fix
+  margin-bottom: 16px; //Fucking Firefox Fix
 
   display: inline-block;
 
@@ -281,6 +283,8 @@
 
 .chat-box__menu__connection__button {
   margin: 4.166667% 0;
+  margin-top: 16px; //Fucking Firefox Fix
+  margin-bottom: 16px; //Fucking Firefox Fix
 
   width: 41.66666667%;
 }
