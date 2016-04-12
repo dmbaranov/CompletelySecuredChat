@@ -21,6 +21,8 @@
 .chat-box__message-wrapper,
 .chat-box__message-text-wrapper,
 .chat-box__button-send-wrapper,
+.chat-box__menu,
+.chat-box__menu__header,
 .chat-box__menu__connection__control-wrapper,
 .chat-box__menu__connection__id-input {
   -webkit-box-sizing: border-box;
@@ -110,6 +112,45 @@ body {
   max-width: 100%;
 }
 
+@media (min-width: 700px) and (max-width: 1200px) {
+  .chat-box {
+    -webkit-flex-basis: 100.000000%;
+    -ms-flex-preferred-size: 100.000000%;
+    flex-basis: 100.000000%;
+    max-width: 100.000000%;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1440px) {
+  .chat-box {
+    -webkit-flex-basis: 58.333333%;
+    -ms-flex-preferred-size: 58.333333%;
+    flex-basis: 58.333333%;
+    max-width: 58.333333%;
+  }
+}
+
+@media (min-width: 1440px) {
+  .chat-box {
+    -webkit-flex-basis: 66.666667%;
+    -ms-flex-preferred-size: 66.666667%;
+    flex-basis: 66.666667%;
+    max-width: 66.666667%;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1440px) {
+  .chat-box {
+    overflow: visible;
+  }
+}
+
+@media (min-width: 1440px) {
+  .chat-box {
+    overflow: visible;
+  }
+}
+
 .chat-box__header {
   display: -webkit-box;
   display: -webkit-flex;
@@ -135,6 +176,18 @@ body {
 .chat-box__header-menu {
   padding-top: 3px;
   padding-right: 4.166667%;
+}
+
+@media (min-width: 1200px) and (max-width: 1440px) {
+  .chat-box__header-menu {
+    display: none;
+  }
+}
+
+@media (min-width: 1440px) {
+  .chat-box__header-menu {
+    display: none;
+  }
 }
 
 .chat-box__messages {
@@ -212,13 +265,13 @@ body {
 
 @media (min-width: 1200px) and (max-width: 1440px) {
   .chat-box__footer {
-    width: 1148px;
+    width: 670px;
   }
 }
 
 @media (min-width: 1440px) {
   .chat-box__footer {
-    width: 1380px;
+    width: 920px;
   }
 }
 
@@ -248,10 +301,10 @@ body {
 
 @media (min-width: 1200px) and (max-width: 1440px) {
   .chat-box__message-text-wrapper {
-    -webkit-flex-basis: 75.000000%;
-    -ms-flex-preferred-size: 75.000000%;
-    flex-basis: 75.000000%;
-    max-width: 75.000000%;
+    -webkit-flex-basis: 66.666667%;
+    -ms-flex-preferred-size: 66.666667%;
+    flex-basis: 66.666667%;
+    max-width: 66.666667%;
   }
 }
 
@@ -263,10 +316,10 @@ body {
 
 @media (min-width: 1440px) {
   .chat-box__message-text-wrapper {
-    -webkit-flex-basis: 79.166667%;
-    -ms-flex-preferred-size: 79.166667%;
-    flex-basis: 79.166667%;
-    max-width: 79.166667%;
+    -webkit-flex-basis: 70.833333%;
+    -ms-flex-preferred-size: 70.833333%;
+    flex-basis: 70.833333%;
+    max-width: 70.833333%;
   }
 }
 
@@ -315,10 +368,10 @@ body {
 
 @media (min-width: 1200px) and (max-width: 1440px) {
   .chat-box__button-send-wrapper {
-    -webkit-flex-basis: 12.500000%;
-    -ms-flex-preferred-size: 12.500000%;
-    flex-basis: 12.500000%;
-    max-width: 12.500000%;
+    -webkit-flex-basis: 20.833333%;
+    -ms-flex-preferred-size: 20.833333%;
+    flex-basis: 20.833333%;
+    max-width: 20.833333%;
   }
 }
 
@@ -330,22 +383,21 @@ body {
 
 @media (min-width: 1440px) {
   .chat-box__button-send-wrapper {
-    -webkit-flex-basis: 8.333333%;
-    -ms-flex-preferred-size: 8.333333%;
-    flex-basis: 8.333333%;
-    max-width: 8.333333%;
+    -webkit-flex-basis: 20.833333%;
+    -ms-flex-preferred-size: 20.833333%;
+    flex-basis: 20.833333%;
+    max-width: 20.833333%;
   }
 }
 
 @media (min-width: 1440px) {
   .chat-box__button-send-wrapper {
-    margin-left: 4.166667%;
+    margin-left: 0%;
   }
 }
 
 .chat-box__button-send {
   min-width: 16.666667%;
-  margin-left: 4.16666667%;
 }
 
 .chat-box__is-typing {
@@ -362,9 +414,97 @@ body {
   top: 83px;
   left: 100%;
   width: 100%;
-  height: 100%;
-  background: #eeeeee;
+  background: #ffffff;
   overflow: auto;
+}
+
+@media (min-width: 1200px) and (max-width: 1440px) {
+  .chat-box__menu {
+    -webkit-flex-basis: 66.666667%;
+    -ms-flex-preferred-size: 66.666667%;
+    flex-basis: 66.666667%;
+    max-width: 66.666667%;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1440px) {
+  .chat-box__menu {
+    margin-left: 4.166667%;
+  }
+}
+
+@media (min-width: 1440px) {
+  .chat-box__menu {
+    -webkit-flex-basis: 45.833333%;
+    -ms-flex-preferred-size: 45.833333%;
+    flex-basis: 45.833333%;
+    max-width: 45.833333%;
+  }
+}
+
+@media (min-width: 1440px) {
+  .chat-box__menu {
+    margin-left: 4.166667%;
+  }
+}
+
+@media (max-width: 700px) {
+  .chat-box__menu {
+    height: 100%;
+  }
+}
+
+@media (min-width: 700px) and (max-width: 1200px) {
+  .chat-box__menu {
+    height: 100%;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1440px) {
+  .chat-box__menu {
+    top: 0;
+  }
+}
+
+@media (min-width: 1440px) {
+  .chat-box__menu {
+    top: 0;
+  }
+}
+
+.chat-box__menu__header {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding-top: 20px;
+  padding-bottom: 30px;
+  padding-left: 4.166667%;
+  color: #ffffff;
+  font-size: 18px;
+  background: #3f51b5;
+  -webkit-box-shadow: 0 5px 5px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.5);
+  -webkit-flex-basis: 100%;
+  -ms-flex-preferred-size: 100%;
+  flex-basis: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 700px) {
+  .chat-box__menu__header {
+    display: none;
+  }
+}
+
+@media (min-width: 700px) and (max-width: 1200px) {
+  .chat-box__menu__header {
+    display: none;
+  }
 }
 
 .chat-box__menu-item {
@@ -381,12 +521,16 @@ body {
   color: #f44336;
 }
 
+.chat-box__menu-status--awaiting {
+  color: #fbc02d;
+}
+
 .chat-box__menu-status--connected {
   color: #4caf50;
 }
 
 .chat-box__menu__key-button {
-  margin-top: 4.166667%;
+  margin: 4.166667% 0;
   width: 25%;
   margin-left: 75%;
 }
@@ -407,6 +551,7 @@ body {
 }
 
 .chat-box__menu__connection__id-input {
+  margin: 4.166667% 0;
   display: inline-block;
   -webkit-flex-basis: 50%;
   -ms-flex-preferred-size: 50%;
@@ -415,6 +560,7 @@ body {
 }
 
 .chat-box__menu__connection__button {
+  margin: 4.166667% 0;
   width: 41.66666667%;
 }
 

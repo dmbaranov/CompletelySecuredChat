@@ -43,21 +43,25 @@
 
     $('#generateKey').click(this.generateRSAKeys.bind(this));
     $('#chatBoxMyKeyButton').click(function () {
-      $('#chatBoxMyKey').fadeOut('slow', function () {
-        $('#chatBoxCompanionKey').fadeIn('slow');
+      $('#chatBoxMyKey').fadeOut(400, function () {
+        $('#chatBoxCompanionKey').fadeIn(400);
       });
     });
 
     $('#chatBoxCompanionKeyButton').click(function () {
       __self.setCompanionRSAKey();
-      $('#chatBoxCompanionKey').fadeOut('slow', function () {
-        $('#chatBoxMenuConnection').fadeIn('slow');
+      $('#chatBoxCompanionKey').fadeOut(400, function () {
+        $('#chatBoxMenuConnection').fadeIn(400);
       });
     });
     $('#companionPublicKey').on('input', this.renderCompanionKey.bind(this));
 
     $('#connectionID').on('input', this.renderConnection.bind(this));
-    $('#buttonConnect').click(this.onConnectClick.bind(this));
+    $('#buttonConnect').click(function () {
+      __self.onConnectClick();
+      $('#connectionStatus').html('Подключение...');
+      $('#connectionStatus').removeClass('chat-box__menu-status--not-connected chat-box__menu-status--connected').addClass('chat-box__menu-status--awaiting');
+    });
 
     $('#sendMessageButton').click(this.sendMessage.bind(this));
     $('#messageText').keypress(function (e) {
@@ -131,6 +135,8 @@
   Chat.prototype.connect = function (c) {
     $('#messageText').prop('disabled', false);
     $('#sendMessageButton').prop('disabled', false);
+    $('#connectionStatus').html('Подключен');
+    $('#connectionStatus').removeClass('chat-box__menu-status--not-connected chat-box__menu-status--awaiting').addClass('chat-box__menu-status--connected');
 
     var __self = this;
     if (c.label != 'chat') {
@@ -174,6 +180,8 @@
         __self.connection = {};
         delete __self.connectedPeers[c.peer];
         $('#messageText').prop('disabled', true);
+        $('#connectionStatus').html('Собеседник вышел');
+        $('#connectionStatus').removeClass('chat-box__menu-status--connected chat-box__menu-status--awaiting').addClass('chat-box__menu-status--not-connected');
       });
     }
     if(Object.keys(this.connection).length == 0) {
@@ -195,6 +203,8 @@
       c.on('open', function () {
         $('#messageText').prop('disabled', false);
         $('#sendMessageButton').prop('disabled', false);
+        $('#connectionStatus').html('Подключен');
+        $('#connectionStatus').removeClass('chat-box__menu-status--not-connected chat-box__menu-status--awaiting').addClass('chat-box__menu-status--connected');
         __self.connect(c);
       });
       c.on('error', function (err) {

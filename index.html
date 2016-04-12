@@ -13,66 +13,10 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/paper/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
-
-    <script src="js/jquery-2.2.3.min.js"></script>
-    <script src="js/peer.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
   </head>
   <body>
   <div class="container-fluid">
     <div class="container">
-      <div class="modal fade" id="startingWindow" role="dialog" data-backdrop="static" data-keyboard="false" hidden>
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h3>Приветствуем... Для начала необходимо представиться и обменяться ключами шифрования</h3>
-            </div>
-            <div class="modal-body">
-              Ваше имя:
-              <input type="text" id="userName" class="user-name-field" placeholder="Введите ваше имя">
-              <br>
-              <!--Ваш ключ шифрования (<span id="generateKey" class="generateKey">Сгенерировать</span>. Генерация ключа может происходить до нескольких секунд. Не забудьте отправить его собеседнику):
-              <textarea name="creatorKey" id="creatorPublicKey" class="key-text-area input-large" rows="5" readonly></textarea>-->
-              <!--Вставьте сюда ключ шифрования собеседника:
-              <textarea name="companionKey" id="companionPublicKey" class="key-text-area input-large" rows="5"></textarea>-->
-            </div>
-            <div class="modal-footer">
-              <!--<button class="btn btn-primary" id="startingWindowContinueButton" data-dismiss="modal" aria-hidden="true" disabled>Продолжить</button>-->
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal fade" id="makeConnectionWindow" role="dialog" data-backdrop="static" data-keyboard="false" hidden>
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h3>Комната</h3>
-            </div>
-            <div class="modal-body">
-              <!--Ваш ID: <span class="modal-body__room-id" id="pid"></span>-->
-              <br>
-              Дождитесь, пока кто нибудь к вам присоединится, либо введите ID собеседника и нажмите кнопку Подключение
-              <br>
-              <!--<input type="text" class="connection-id" id="connectionID" placeholder="ID собеседника">
-              <button class="btn btn-primary" id="connect" aria-hidden="true" disabled>Подключение</button>-->
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal fade" id="awaitingWindow" role="dialog" data-backdrop="static" data-keyboard="false" hidden>
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h3>Ожидайте</h3>
-            </div>
-            <div class="modal-body">
-              Это окно будет автоматически закрыто, когда соединение будет установлено
-            </div>
-          </div>
-        </div>
-      </div>
 
       <section class="chat-box">
         <div class="chat-box__header">
@@ -95,7 +39,9 @@
           </div>
         </div>
 
-        <div id="chatboxMenu" class="chat-box__menu">
+        <aside id="chatboxMenu" class="chat-box__menu">
+
+          <div class="chat-box__menu__header">Меню</div>
           <div class="chat-box__menu-item chat-box__menu-id">Ваш ID: <span id="pid"></span></div>
           <div class="chat-box__menu-item hat-box__menu-status">Статус: <span id="connectionStatus" class="chat-box__menu-status--not-connected">Не подключен</span></div>
 
@@ -119,11 +65,17 @@
               <input type="button" id="buttonConnect" class="btn btn-primary chat-box__menu__connection__button" aria-hidden="true" value="Подключение" disabled>
             </div>
           </div>
-        </div>
+
+        </aside>
+
       </section>
+
     </div>
   </div>
 
+  <script src="js/jquery-2.2.3.min.js"></script>
+  <script src="js/peer.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
   <script src="js/jsbn.js"></script>
   <script src="js/cryptico.js"></script>
   <script src="js/random.js"></script>

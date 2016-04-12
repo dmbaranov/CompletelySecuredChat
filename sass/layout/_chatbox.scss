@@ -10,6 +10,17 @@
   overflow: hidden;
 
   @include col-xs-24;
+  @include col-sm-24;
+  @include col-md-14;
+  @include col-lg-16;
+
+  @include mq-md {
+    overflow: visible;
+  }
+
+  @include mq-lg {
+    overflow: visible;
+  }
 }
 
 .chat-box__header {
@@ -32,6 +43,14 @@
 .chat-box__header-menu {
   padding-top: 3px;
   padding-right: 4.166667%;
+
+  @include mq-md {
+    display: none;
+  }
+
+  @include mq-lg {
+    display: none;
+  }
 }
 
 .chat-box__messages {
@@ -97,11 +116,11 @@
   background:$lighter-grey;
 
   @include mq-md {
-    width: $device-md - 52px;
+    width: $device-md - 530px;
   }
 
   @include mq-lg {
-    width: $device-lg - 60px;
+    width: $device-lg - 520px;
   }
 }
 
@@ -112,9 +131,9 @@
   @include col-xs-offset-1;
   @include col-sm-17;
   @include col-sm-offset-1;
-  @include col-md-18;
+  @include col-md-16;
   @include col-md-offset-1;
-  @include col-lg-19;
+  @include col-lg-17;
   @include col-lg-offset-1;
 }
 
@@ -133,16 +152,17 @@
   @include col-xs-offset-1;
   @include col-sm-4;
   @include col-sm-offset-1;
-  @include col-md-3;
+  @include col-md-5;
   @include col-md-offset-1;
-  @include col-lg-2;
-  @include col-lg-offset-1;
+  @include col-lg-5;
+  @include col-lg-offset-0;
 }
 
 .chat-box__button-send {
   min-width: 16.666667%;
 
-  @include col-xs-offset-1;
+  @include mq-lg {
+  }
 }
 
 .chat-box__is-typing {
@@ -162,11 +182,55 @@
   left: 100%;
 
   width: 100%;
-  height: 100%;
 
-  background: #eeeeee;
+  background: $white;
 
   overflow: auto;
+
+  @include col-md-16;
+  @include col-md-offset-1;
+  @include col-lg-11;
+  @include col-lg-offset-1;
+
+  @include mq-xs {
+    height: 100%;
+  }
+
+  @include mq-sm {
+    height: 100%;
+  }
+
+  @include mq-md {
+    top: 0;
+  }
+
+  @include mq-lg {
+    top: 0;
+  }
+}
+
+.chat-box__menu__header {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 20px;
+  padding-bottom: 30px;
+  padding-left: 4.166667%;
+
+  color: $white;
+  font-size: $font-medium;
+
+  background: $indigo;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.5);
+
+  @include col-xs-24;
+
+  @include mq-xs {
+    display: none;
+  }
+  
+  @include mq-sm {
+    display: none;
+  }
 }
 
 .chat-box__menu-item {
@@ -184,12 +248,16 @@
   color: $red;
 }
 
+.chat-box__menu-status--awaiting {
+  color: $yellow;
+}
+
 .chat-box__menu-status--connected {
   color: $green;
 }
 
 .chat-box__menu__key-button {
-  margin-top: 4.166667%;
+  margin: 4.166667% 0;
 
   width: 25%;
 
@@ -204,11 +272,15 @@
 }
 
 .chat-box__menu__connection__id-input {
+  margin: 4.166667% 0;
+
   display: inline-block;
 
   @include col-xs-12;
 }
 
 .chat-box__menu__connection__button {
+  margin: 4.166667% 0;
+
   width: 41.66666667%;
 }
