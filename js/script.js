@@ -11,6 +11,7 @@
     this.messagesBox = $('#messagesBox');
     this.isTyping = '';
     this.isMenuHidden = true;
+    this.playMessageSound = '';
 
     this.init();
   };
@@ -28,6 +29,9 @@
     });
 
     this.isTyping = false;
+    this.playMessageSound = document.createElement('audio');
+    this.playMessageSound.setAttribute('src', 'sound/newmsg.wav');
+
 
     this.peer.on('open', function () {
       $('#pid').html(__self.peer.id);
@@ -41,7 +45,7 @@
 
     $('#menuButton').click(this.onMenuClick.bind(this));
 
-    $('#generateKey').click(this.generateRSAKeys.bind(this));
+    $('#generateKey').click(this.generateRSAKeys.bind(this)); //for menu submenus
     $('#chatBoxMyKeyButton').click(function () {
       $('#chatBoxMyKey').fadeOut(400, function () {
         $('#chatBoxCompanionKey').fadeIn(400);
@@ -70,43 +74,6 @@
       }
     });
     $('#messageText').on('input', this.sendTypingState.bind(this));
-
-
-
-
-
-    /*//StartingWindow
-    $('#startingWindow').modal('show');
-    $('#generateKey').click(this.generateRSAKeys.bind(this));
-    $('#companionPublicKey').on('input', this.setCompanionRSAKey.bind(this));
-    $('#userName').on('input', this.renderStartingWindow.bind(this));
-    $('#startingWindowContinueButton').click(function () {
-      $('#startingWindow').modal('hide');
-      $('#makeConnectionWindow').modal('show');
-      //$('#pid').html(__self.peer.id);
-      __self.userName = $('#userName').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    });
-
-    //MakeConnectionWindow
-    $('#connect').click(this.onConnectClick.bind(this));
-    $('#connectionID').on('input', this.renderConnectionWindow);
-    $('#connect').click((function () {
-      $('#makeConnectionWindow').modal('hide');
-      $('#awaitingWindow').modal('show');
-    }).bind(this));
-
-    //MainWindow
-    $('#menuButton').click(this.onMenuClick.bind(this));
-    $('#sendMessageButton').click(this.sendMessage.bind(this));
-    $('#messageText').keypress(function (e) {
-      if(e.which == 13) {
-        $('#sendMessageButton').trigger('click');
-      }
-    });
-    $('#messageText').on('input', this.sendTypingState.bind(this));*/
-
-    $('#startingWindow').modal('hide');
-    $('#makeConnectionWindow').modal('hide');
   };
 
   Chat.prototype.generatePassword = function () {
@@ -119,9 +86,7 @@
     return result;
   };
 
-  Chat.prototype.generateRSAKeys = function () {
-    //use new Worker(js/worker.js)
-
+  Chat.prototype.generateRSAKeys = function () { //TODO: may try to add Web Worker
     this.pass = this.generatePassword();
     this.userPrivateRSAKey = cryptico.generateRSAKey(this.pass, 512);
     this.userPublicRSAKey = cryptico.publicKeyString(this.userPrivateRSAKey);
@@ -132,17 +97,14 @@
     this.companionPublicRSAKey = $('#companionPublicKey').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
   };
 
-  Chat.prototype.connect = function (c) {
-    $('#messageText').prop('disabled', false);
+  Chat.prototype.connect = function (c) { //TODO: additional condition for 5 lines below
+    /*$('#messageText').prop('disabled', false);
     $('#sendMessageButton').prop('disabled', false);
-    $('#connectionStatus').html('Подключен');
-    $('#connectionStatus').removeClass('chat-box__menu-status--not-connected chat-box__menu-status--awaiting').addClass('chat-box__menu-status--connected');
-    $('#chatBoxMenuConnection').fadeOut(400);
+    $('#connectionStatus').html('Подключен').removeClass('chat-box__menu-status--not-connected chat-box__menu-status--awaiting').addClass('chat-box__menu-status--connected');
+    $('#chatBoxMenuConnection').fadeOut(400);*/
 
     var __self = this;
-    if (c.label != 'chat') {
-    }
-    else {
+    if (c.label == 'chat') {
       //Handle received messages
       c.on('data', function (data) {
 
@@ -165,29 +127,33 @@
         else {
           wrapper.classList.add('chat-box__message-wrapper');
           messageElem.classList.add('chat-box__message', 'guest-message')
-          messageElem.innerHTML = cryptico.decrypt(tData.cipher, __self.userPrivateRSAKey).plaintext;
+          //messageElem.innerHTML = cryptico.decrypt(tData.cipher, __self.userPrivateRSAKey).plaintext;
           messageElem.innerHTML = msg;
 
           wrapper.appendChild(messageElem);
           __self.messagesBox.append(wrapper);
-
+          __self.playMessageSound.play();
           __self.messagesBox.scrollTop(boxHeight);
         }
-
         console.log('Received: ' + data);
       });
+
       c.on('close', function () {
         console.log('Companion has left');
         __self.connection = {};
         delete __self.connectedPeers[c.peer];
         $('#messageText').prop('disabled', true);
-        $('#connectionStatus').html('Собеседник вышел');
-        $('#connectionStatus').removeClass('chat-box__menu-status--connected chat-box__menu-status--awaiting').addClass('chat-box__menu-status--not-connected');
+        $('#connectionStatus').html('Собеседник вышел').removeClass('chat-box__menu-status--connected chat-box__menu-status--awaiting').addClass('chat-box__menu-status--not-connected');
       });
     }
-    if(Object.keys(this.connection).length == 0) {
+    if(Object.keys(this.connection).length == 0) { //if there is no active connections yet
       this.connectedPeers[c.peer] = 1;
       this.connection = c;
+
+      $('#messageText').prop('disabled', false);
+      $('#sendMessageButton').prop('disabled', false);
+      $('#connectionStatus').html('Подключен').removeClass('chat-box__menu-status--not-connected chat-box__menu-status--awaiting').addClass('chat-box__menu-status--connected');
+      $('#chatBoxMenuConnection').fadeOut(400);
     }
   };
 
@@ -295,6 +261,8 @@
       $('#buttonConnect').prop('disabled', true);
     }
   }
+
+  //TODO: render incoming message
 
   window.peerjschat = new Chat();
 
