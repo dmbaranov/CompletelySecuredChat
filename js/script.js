@@ -97,34 +97,52 @@
   };
 
   Chat.prototype.setCompanionRSAKey = function () {
-    this.companionPublicRSAKey = $('#companionPublicKey').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    //this.companionPublicRSAKey = $('#companionPublicKey').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
   };
 
   Chat.prototype.connect = function (c) {
 
     var __self = this;
+
     if (c.label == 'chat') {
       //Handle received messages
+
+      //This function sets companion public RSA key
+      if(this.companionPublicRSAKey == '') {
+        var checker = setInterval(function () {
+          if(Object.keys(__self.connection).length != 0 && __self.isConnected && Object.keys(__self.connectedPeers).length != 0) {
+            setTimeout(function () {
+              __self.connection.send(__self.userPublicRSAKey);
+            }, 1500);
+            window.clearInterval(checker);
+          }
+        }, 500)
+      }
       c.on('data', function (data) {
 
-        var tData = JSON.parse(data),
-            msg = '';
-
-        msg = cryptico.decrypt(tData.cipher, __self.userPrivateRSAKey).plaintext;
-        msg = Base64.decode(msg);
-
-
-        if(msg == '{{<currentUserIsTyping>}}') {
-          $('#typingState').fadeIn('slow');
-        }
-        else if(msg == '{{<currentUserHasStoppedTyping>}}') {
-          $('#typingState').fadeOut('slow');
+        if(__self.companionPublicRSAKey == '') {
+          __self.companionPublicRSAKey = data;
         }
         else {
-          __self.playMessageSound.play();
-          __self.renderNewMessage(msg, "guest-message");
+          var tData = JSON.parse(data),
+              msg = '';
+
+          msg = cryptico.decrypt(tData.cipher, __self.userPrivateRSAKey).plaintext;
+          msg = Base64.decode(msg);
+
+
+          if(msg == '{{<currentUserIsTyping>}}') {
+            $('#typingState').fadeIn('slow');
+          }
+          else if(msg == '{{<currentUserHasStoppedTyping>}}') {
+            $('#typingState').fadeOut('slow');
+          }
+          else {
+            __self.playMessageSound.play();
+            __self.renderNewMessage(msg, "guest-message");
+          }
+          console.log('Received: ' + data);
         }
-        console.log('Received: ' + data);
       });
 
       //If companion left
@@ -138,6 +156,8 @@
       });
     }
     if(Object.keys(this.connection).length == 0) { //if there is no active connections yet
+      console.log('First connection time');
+
       this.connectedPeers[c.peer] = 1;
       this.connection = c;
       this.isConnected = true;
@@ -161,6 +181,9 @@
 
       c.on('open', function () {
         __self.isConnected = true;
+        if(Object.keys(__self.connection).length != 0) {
+          __self.connection.send('Here should be the key!');
+        }
 
         $('#messageText').prop('disabled', false);
         $('#sendMessageButton').prop('disabled', false);
@@ -182,8 +205,10 @@
 
     this.renderNewMessage(msg, "my-message");
 
-    msg = Base64.encode(msg);
-    msg = cryptico.encrypt(msg, this.companionPublicRSAKey);
+    if(this.companionPublicRSAKey != '') {
+      msg = Base64.encode(msg);
+      msg = cryptico.encrypt(msg, this.companionPublicRSAKey);
+    }
 
     this.connection.send(JSON.stringify(msg));
     this.sendTypingState();
