@@ -262,7 +262,10 @@
 
     this.messagesBox.append(wrapper);
 
-    $('#messageText').val('');
+    if(type == 'my-message') {
+      $('#messageText').val(''); 
+    }
+    
     this.messagesBox.scrollTop(boxHeight);
   };
 
