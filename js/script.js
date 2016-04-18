@@ -44,30 +44,22 @@
 
 
 
-    $('#menuButton').click(this.onMenuClick.bind(this));
+    $('#menuButton').click(this.onMenuClick.bind(this)); //mobile menu
 
-    $('#generateKey').click(this.generateRSAKeys.bind(this)); //this and below are for submenus
-    $('#chatBoxMyKeyButton').click(function () {
-      $('#chatBoxMyKey').fadeOut(400, function () {
-        $('#chatBoxCompanionKey').fadeIn(400);
+    $('#generateKey').click(function () {
+      __self.generateRSAKeys.call(__self);
+
+      $('#pid').prop('hidden', false);
+      $('#chatBoxKeys').fadeOut(400, function () {
+        $('#chatBoxMenuConnection').fadeIn(400);
       });
     });
-
-    $('#chatBoxCompanionKeyButton').click(function () {
-      __self.setCompanionRSAKey();
-      $('#chatBoxCompanionKey').fadeOut(400, function () {
-        if(!__self.isConnected) {
-          $('#chatBoxMenuConnection').fadeIn(400);
-        }
-      });
-    });
-    $('#companionPublicKey').on('input', this.renderCompanionKey.bind(this));
 
     $('#connectionID').on('input', this.renderConnection.bind(this));
     $('#buttonConnect').click(function () {
       __self.onConnectClick();
       $('#connectionStatus').html('Подключение...');
-      $('#connectionStatus').removeClass('chat-box__menu-status--not-connected chat-box__menu-status--connected').addClass('chat-box__menu-status--awaiting');
+      $('#connectionStatus').removeClass('menu-status--not-connected menu-status--connected').addClass('menu-status--awaiting');
     });
 
     $('#sendMessageButton').click(this.sendMessage.bind(this));
@@ -82,7 +74,7 @@
   Chat.prototype.generatePassword = function () {
     var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*();.",
         result = '';
-    for(var i = 0; i < 64; i++) {
+    for(var i = 0; i < 256; i++) {
       result += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
     }
 
@@ -93,11 +85,6 @@
     this.pass = this.generatePassword();
     this.userPrivateRSAKey = cryptico.generateRSAKey(this.pass, 512);
     this.userPublicRSAKey = cryptico.publicKeyString(this.userPrivateRSAKey);
-    this.renderMyKey();
-  };
-
-  Chat.prototype.setCompanionRSAKey = function () {
-    //this.companionPublicRSAKey = $('#companionPublicKey').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
   };
 
   Chat.prototype.connect = function (c) {
@@ -107,20 +94,20 @@
     if (c.label == 'chat') {
       //Handle received messages
 
-      //This function sets companion public RSA key
+      //This function send user public RSA key as first message when connection is established
       if(this.companionPublicRSAKey == '') {
         var checker = setInterval(function () {
-          if(Object.keys(__self.connection).length != 0 && __self.isConnected && Object.keys(__self.connectedPeers).length != 0) {
+          if(Object.keys(__self.connection).length != 0 && __self.isConnected && Object.keys(__self.connectedPeers).length != 0) { //we check if connection is established. idk why that timeout, but it doesn't send messages without pause after connection
             setTimeout(function () {
               __self.connection.send(__self.userPublicRSAKey);
             }, 1500);
             window.clearInterval(checker);
           }
-        }, 500)
+        }, 500);
       }
       c.on('data', function (data) {
 
-        if(__self.companionPublicRSAKey == '') {
+        if(__self.companionPublicRSAKey == '') { //when companion public key is not set, first message will set it
           __self.companionPublicRSAKey = data;
         }
         else {
@@ -152,7 +139,8 @@
         __self.isConnected = false;
         delete __self.connectedPeers[c.peer];
         $('#messageText').prop('disabled', true);
-        $('#connectionStatus').html('Собеседник вышел').removeClass('chat-box__menu-status--connected chat-box__menu-status--awaiting').addClass('chat-box__menu-status--not-connected');
+        $('#sendMessageButton').prop('disabled', true);
+        $('#connectionStatus').html('Собеседник вышел').removeClass('menu-status--connected menu-status--awaiting').addClass('menu-status--not-connected');
       });
     }
     if(Object.keys(this.connection).length == 0) { //if there is no active connections yet
@@ -162,16 +150,14 @@
       this.connection = c;
       this.isConnected = true;
 
-      $('#messageText').prop('disabled', false);
-      $('#sendMessageButton').prop('disabled', false);
-      $('#connectionStatus').html('Подключен').removeClass('chat-box__menu-status--not-connected chat-box__menu-status--awaiting').addClass('chat-box__menu-status--connected');
-      $('#chatBoxMenuConnection').fadeOut(400);
+      __self.renderMainWindow(); //TODO: use another function, this one won't work
     }
   };
 
   Chat.prototype.onConnectClick = function () {
     var __self = this;
-    var RequestedPeer = $('#connectionID').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");;
+    var RequestedPeer = $('#connectionID').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
     if(!this.connectedPeers[RequestedPeer]) {
       var c = this.peer.connect(RequestedPeer, {
         label: 'chat',
@@ -181,14 +167,6 @@
 
       c.on('open', function () {
         __self.isConnected = true;
-        if(Object.keys(__self.connection).length != 0) {
-          __self.connection.send('Here should be the key!');
-        }
-
-        $('#messageText').prop('disabled', false);
-        $('#sendMessageButton').prop('disabled', false);
-        $('#connectionStatus').html('Подключен');
-        $('#connectionStatus').removeClass('chat-box__menu-status--not-connected chat-box__menu-status--awaiting').addClass('chat-box__menu-status--connected');
         __self.connect(c);
       });
       c.on('error', function (err) {
@@ -205,7 +183,7 @@
 
     this.renderNewMessage(msg, "my-message");
 
-    if(this.companionPublicRSAKey != '') {
+    if(this.companionPublicRSAKey != '') { //because first message shouldn't be encrypted
       msg = Base64.encode(msg);
       msg = cryptico.encrypt(msg, this.companionPublicRSAKey);
     }
@@ -244,19 +222,6 @@
     this.isMenuHidden = !this.isMenuHidden;
   };
 
-  Chat.prototype.renderMyKey = function () {
-    $('#myPublicKey').html(this.userPublicRSAKey);
-    $('#chatBoxMyKeyButton').prop('disabled', false);
-  };
-
-  Chat.prototype.renderCompanionKey = function () {
-    if($('#companionPublicKey').val().length > 0) {
-      $('#chatBoxCompanionKeyButton').prop('disabled', false);
-    }
-    else {
-      $('#chatBoxCompanionKeyButton').prop('disabled', true);
-    }
-  };
 
   Chat.prototype.renderConnection = function () {
     if($('#connectionID').val().length > 0) {
@@ -267,15 +232,31 @@
     }
   };
 
-  Chat.prototype.renderNewMessage = function (m, cls) {
+  Chat.prototype.renderMainWindow = function () {
+    var __self = this;
+
+    var isReady = setInterval(function () { //we check if key are set
+      if(__self.companionPublicRSAKey != '') {
+        $('#chatBoxMenuConnection').fadeOut(400);
+        $('#messageText').prop('disabled', false);
+        $('#sendMessageButton').prop('disabled', false);
+        $('#connectionStatus').html('Подключен');
+        $('#connectionStatus').removeClass('menu-status--not-connected menu-status--awaiting').addClass('menu-status--connected');
+
+        window.clearInterval(isReady);
+      }
+    }, 500);
+  };
+
+  Chat.prototype.renderNewMessage = function (msg, type) {
     var boxHeight = document.querySelector('#messagesBox').scrollHeight;
 
     var wrapper = document.createElement('div'),
         messageElem = document.createElement('div');
     wrapper.classList.add('chat-box__message-wrapper');
-    messageElem.classList.add('chat-box__message', cls);
+    messageElem.classList.add('chat-box__message', type);
 
-    messageElem.innerHTML = m;
+    messageElem.innerHTML = msg;
 
     wrapper.appendChild(messageElem);
 
