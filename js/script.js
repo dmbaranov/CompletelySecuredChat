@@ -13,6 +13,7 @@
     this.isMenuHidden = true;
     this.playMessageSound = '';
     this.isConnected = false;
+    this.isStarter = false;
 
     this.init();
   };
@@ -58,6 +59,7 @@
     $('#connectionID').on('input', this.renderConnection.bind(this));
     $('#buttonConnect').click(function () {
       __self.onConnectClick();
+      __self.isStarter = true;
       $('#connectionStatus').html('Подключение...');
       $('#connectionStatus').removeClass('menu-status--not-connected menu-status--connected').addClass('menu-status--awaiting');
     });
@@ -123,6 +125,9 @@
           }
           else if(msg == '{{<currentUserHasStoppedTyping>}}') {
             $('#typingState').fadeOut('slow');
+          }
+          else if(msg == '{{<ID_HAS_BEEN_CONFIRMED>}}') {
+            $('#connectionStatus').html('Подключен');
           }
           else {
             __self.playMessageSound.play();
@@ -240,12 +245,28 @@
         $('#chatBoxMenuConnection').fadeOut(400);
         $('#messageText').prop('disabled', false);
         $('#sendMessageButton').prop('disabled', false);
-        $('#connectionStatus').html('Подключен');
+        $('#connectionStatus').html('Подключен (собеседник не подтвержден)');
         $('#connectionStatus').removeClass('menu-status--not-connected menu-status--awaiting').addClass('menu-status--connected');
+
+        if(!__self.isStarter) {
+          var confirmID = prompt('Введите ID собеседника');
+          if(confirmID === __self.connection.peer) {
+            var msg = "{{<ID_HAS_BEEN_CONFIRMED>}}";
+
+            if(__self.companionPublicRSAKey != '') { //because first message shouldn't be encrypted
+              msg = Base64.encode(msg);
+              msg = cryptico.encrypt(msg, __self.companionPublicRSAKey);
+            }
+
+            __self.connection.send(JSON.stringify(msg));
+            $('#connectionStatus').html('Подключен');
+          }
+        }
 
         window.clearInterval(isReady);
       }
     }, 500);
+
   };
 
   Chat.prototype.renderNewMessage = function (msg, type) {
